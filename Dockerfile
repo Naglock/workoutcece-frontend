@@ -1,7 +1,7 @@
 # ETAPA 1: Construcción (Node.js)
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json package-lock.json ./
 RUN npm install
 COPY . .
 # Asumo que usas Vite (dist). Si usas Create React App, cambia 'dist' por 'build' en la línea 12.
