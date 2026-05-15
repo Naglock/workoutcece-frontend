@@ -49,7 +49,7 @@ Para correr este proyecto en tu entorno local, sigue estos pasos:
 
 * Creacion del frontend para el Alumno (movil).
 
-## 🔗 Autor y Contacto
+## 🔗 Contacto
 
 **Iván Andrés Huentemilla Moreno**
 
