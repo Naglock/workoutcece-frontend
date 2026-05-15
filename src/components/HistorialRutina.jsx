@@ -8,8 +8,6 @@ const HistorialRutinas = ({ alumnoId }) => {
     useEffect(() => {
         const fetchHistorial = async () => {
             try {
-                // Usamos el endpoint de tu WorkoutController
-                // Si tu axios ya tiene el prefijo /api, usa solo '/workouts/...'
                 const response = await api.get(`/workouts/my-routine/${alumnoId}`);
                 setWorkouts(response.data);
             } catch (err) {

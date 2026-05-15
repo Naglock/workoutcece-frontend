@@ -27,7 +27,7 @@ const EjerciciosPage = () => {
         } finally { setLoading(false); }
     };
 
-    // --- LÓGICA DE FILTRADO (Buscador en Memoria) ---
+    // --- LÓGICA DE FILTRADO ---
     const filteredExercises = exercises.filter(ex => {
         const matchesName = ex.name.toLowerCase().includes(searchTerm.toLowerCase());
         // Si no hay filtro de región seleccionado, pasa. Si hay, debe coincidir.

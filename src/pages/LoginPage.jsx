@@ -20,7 +20,7 @@ const LoginPage = () => {
         setIsLoading(true);
 
         try {
-            // Petición POST a tu endpoint de Spring Boot
+
             const response = await api.post('/auth/login', {
                 username,
                 password
@@ -51,7 +51,7 @@ const LoginPage = () => {
         }
     };
 
-    // 4. Renderizado visual del formulario (JSX)
+    // 4. Renderizado visual del formulario
     return (
         <div style={styles.container}>
             <div style={styles.card}>
@@ -96,8 +96,6 @@ const LoginPage = () => {
     );
 };
 
-// Estilos básicos en línea para tener algo presentable de inmediato sin configurar CSS extra.
-// Luego migrar esto a archivos .css o usar frameworks.
 const styles = {
     container: {
         display: 'flex',
