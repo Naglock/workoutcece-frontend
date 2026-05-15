@@ -53,7 +53,6 @@ const AtletasPage = () => {
         <div style={styles.container}>
             <div style={styles.header}>
                 <h2 style={styles.title}>Plantilla de Jugadores</h2>
-                {/* AQUI CONECTAMOS EL BOTON */}
                 <button onClick={handleGenerateInvite} style={styles.addBtn}>+ Invitar Atleta</button>
             </div>
 
@@ -129,7 +128,6 @@ const AtletasPage = () => {
     );
 };
 
-// ESTILOS
 const styles = {
     container: { padding: '20px' },
     header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
