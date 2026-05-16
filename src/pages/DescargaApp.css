@@ -1,0 +1,112 @@
+.descarga-page-wrapper {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0f172a; 
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    padding: 20px;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.descarga-card {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.descarga-gold-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background-color: #d4af37;
+}
+
+.descarga-icon-check {
+    width: 65px;
+    height: 65px;
+    background-color: #dcfce7;
+    color: #16a34a;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0 auto 20px;
+    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.2);
+}
+
+.descarga-title {
+    color: #0f172a;
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.descarga-subtitle {
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.descarga-btn-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.descarga-store-btn {
+    border: none;
+    padding: 14px 20px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    color: white;
+}
+
+.descarga-store-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.descarga-store-btn:active {
+    transform: translateY(0);
+}
+
+.descarga-store-btn.google {
+    background: linear-gradient(135deg, #0000ff 0%, #2563eb 100%);
+    box-shadow: 0 4px 10px rgba(0, 0, 255, 0.2);
+}
+
+.descarga-store-btn.apple {
+    background-color: #000000;
+}
+
+.descarga-btn-sub {
+    font-size: 11px;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.descarga-btn-main {
+    font-size: 20px;
+    font-weight: 800;
+}

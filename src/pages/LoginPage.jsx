@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { jwtDecode } from 'jwt-decode';
-import { globalStyles } from '../styles/globalStyles';
+import logoExcelsior from '../assets/logo.jpeg'; 
+import './LoginPage.css';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -18,18 +19,19 @@ const LoginPage = () => {
         setIsLoading(true);
 
         try {
-
             const response = await api.post('/auth/login', {
                 username,
                 password
             });
             const token = response.data.token;
+            
+            localStorage.setItem('token', token);
             const decoded = jwtDecode(token);
+            
             if (decoded.role === 'ROLE_COACH' || decoded.role === 'COACH') {
-                localStorage.setItem('token', token);
                 navigate('/dashboard');
             } else if (decoded.role === 'ROLE_ALUMNO' || decoded.role === 'ALUMNO') {
-                navigate('/alumno-app');
+                navigate('/atleta'); // 👈 Corregido para coincidir con tu App.jsx
             } else {
                 setError('Rol de usuario no reconocido. Contacta al soporte.');
                 localStorage.removeItem('token');
@@ -46,118 +48,52 @@ const LoginPage = () => {
     };
 
     return (
-        <div style={globalStyles.container}>
-            <div style={globalStyles.card}>
-                <h2 style={globalStyles.title}>WorkoutCeCeApp</h2>
-                <p style={globalStyles.subtitle}>Portal del Entrenador</p>
+        <div className="login-page-wrapper">
+            <div className="login-card">
+                
+                <div className="login-gold-line"></div>
+                
+                <img src={logoExcelsior} alt="Escudo Excelsior" className="login-logo" />
+                
+                <h2 className="login-title">WorkoutCeCeApp</h2>
+                <p className="login-subtitle">Portal de Acceso</p>
 
-                {error && <div style={globalStyles.errorBox}>{error}</div>}
+                {error && <div className="login-error-box">{error}</div>}
 
-                <form onSubmit={handleLogin} style={globalStyles.form}>
-                    <div style={globalStyles.inputGroup}>
-                        <label style={globalStyles.label}>Usuario</label>
+                <form onSubmit={handleLogin} className="login-form">
+                    <div className="login-input-group">
+                        <label className="login-label">Usuario</label>
                         <input 
                             type="text" 
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            style={globalStyles.input}
+                            className="login-input"
                             required
                         />
                     </div>
 
-                    <div style={globalStyles.inputGroup}>
-                        <label style={globalStyles.label}>Contraseña</label>
+                    <div className="login-input-group">
+                        <label className="login-label">Contraseña</label>
                         <input 
                             type="password" 
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            style={globalStyles.input}
+                            className="login-input"
                             required
                         />
                     </div>
 
                     <button 
                         type="submit" 
-                        style={globalStyles.button} 
+                        className="login-button"
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Conectando...' : 'Ingresar'}
+                        {isLoading ? 'Conectando...' : 'Ingresar ▶'}
                     </button>
                 </form>
             </div>
         </div>
     );
-};
-
-const styles = {
-    container: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100vh',
-        backgroundColor: '#f4f4f9',
-        fontFamily: 'Arial, sans-serif'
-    },
-    card: {
-        backgroundColor: '#ffffff',
-        padding: '40px',
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-        width: '100%',
-        maxWidth: '400px'
-    },
-    title: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: '5px'
-    },
-    subtitle: {
-        textAlign: 'center',
-        color: '#666666',
-        marginBottom: '20px',
-        fontSize: '14px'
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '15px'
-    },
-    inputGroup: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '5px'
-    },
-    label: {
-        fontSize: '14px',
-        color: '#333',
-        fontWeight: 'bold'
-    },
-    input: {
-        padding: '10px',
-        borderRadius: '4px',
-        border: '1px solid #ccc',
-        fontSize: '16px'
-    },
-    button: {
-        padding: '12px',
-        backgroundColor: '#0056b3',
-        color: 'white',
-        border: 'none',
-        borderRadius: '4px',
-        fontSize: '16px',
-        cursor: 'pointer',
-        fontWeight: 'bold',
-        marginTop: '10px'
-    },
-    errorBox: {
-        backgroundColor: '#f8d7da',
-        color: '#721c24',
-        padding: '10px',
-        borderRadius: '4px',
-        marginBottom: '15px',
-        textAlign: 'center',
-        fontSize: '14px'
-    }
 };
 
 export default LoginPage;

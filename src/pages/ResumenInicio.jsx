@@ -26,54 +26,60 @@ const ResumenInicio = () => {
         fetchDashboardData();
     }, []);
 
-    if (loading) return <p>Cargando dashboard...</p>;
+    if (loading) return <p style={{ padding: '20px' }}>Cargando dashboard...</p>;
 
     return (
-        <div style={styles.container}>
-            <h2 style={styles.welcome}>¡Hola de nuevo, Coach!</h2>
+        <div>
+            <h2 style={{ marginBottom: '25px', color: 'var(--coach-text-dark)' }}>
+                ¡Hola de nuevo, Coach!
+            </h2>
             
-            {/* Tarjetas de Estadísticas Rápidas */}
-            <div style={styles.statsGrid}>
-                <div style={styles.cardStat}>
-                    <span style={styles.statLabel}>Atletas Activos</span>
-                    <span style={styles.statNumber}>{stats.totalAtletas}</span>
+            <div className="coach-stat-grid">
+                <div className="coach-stat-card">
+                    <span className="coach-stat-label">Atletas Activos</span>
+                    <span className="coach-stat-number">{stats.totalAtletas}</span>
                 </div>
-                <div style={styles.cardStat}>
-                    <span style={styles.statLabel}>Rutinas Pendientes</span>
-                    <span style={styles.statNumber}>--</span>
+                <div className="coach-stat-card">
+                    <span className="coach-stat-label">Rutinas Pendientes</span>
+                    <span className="coach-stat-number">--</span>
                 </div>
             </div>
 
-            {/* Tabla de Atletas en el Dashboard */}
-            <div style={styles.section}>
-                <div style={styles.sectionHeader}>
-                    <h3 style={styles.sectionTitle}>Atletas Recientes (ultimos 5 registrados)</h3>
+            <div className="coach-card">
+                <div className="coach-card-header">
+                    <h3 style={{ margin: 0 }}>Atletas Recientes</h3>
                     <button 
                         onClick={() => navigate('/dashboard/atletas')} 
-                        style={styles.viewAllBtn}
+                        className="coach-btn coach-btn-outline"
                     >
                         Ver todos
                     </button>
                 </div>
 
-                <div style={styles.recentList}>
+                <div className="coach-list">
                     {stats.ultimosAtletas.length === 0 ? (
-                        <p style={styles.emptyText}>Aún no tienes atletas vinculados.</p>
+                        <p style={{ textAlign: 'center', color: 'var(--coach-text-muted)', padding: '20px' }}>
+                            Aún no tienes atletas vinculados.
+                        </p>
                     ) : (
                         stats.ultimosAtletas.map(atleta => (
-                            <div key={atleta.id} style={styles.atletaItem}>
-                                <div style={styles.atletaInfo}>
-                                    <div style={styles.avatar}>
+                            <div key={atleta.id} className="coach-list-item">
+                                <div className="coach-list-info">
+                                    <div className="coach-avatar">
                                         {atleta.fullName.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <div style={styles.atletaName}>{atleta.fullName || atleta.username}</div>
-                                        <div style={styles.atletaEmail}>{atleta.email}</div>
+                                        <div className="coach-list-name">{atleta.fullName || atleta.username}</div>
+                                        <div className="coach-list-email">{atleta.email}</div>
                                     </div>
                                 </div>
                                 <button 
-                                onClick={() => navigate(`/dashboard/atletas/${atleta.id}`)}
-                                style={styles.miniBtn}>Gestionar</button>
+                                    onClick={() => navigate(`/dashboard/atletas/${atleta.id}`)}
+                                    className="coach-btn coach-btn-outline"
+                                    style={{ padding: '6px 12px', fontSize: '12px' }}
+                                >
+                                    Gestionar
+                                </button>
                             </div>
                         ))
                     )}
@@ -81,27 +87,6 @@ const ResumenInicio = () => {
             </div>
         </div>
     );
-};
-
-const styles = {
-    container: { padding: '10px' },
-    welcome: { color: '#1e293b', marginBottom: '25px' },
-    statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '30px' },
-    cardStat: { backgroundColor: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column' },
-    statLabel: { color: '#64748b', fontSize: '14px', fontWeight: '500' },
-    statNumber: { color: '#3b82f6', fontSize: '32px', fontWeight: 'bold' },
-    section: { backgroundColor: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' },
-    sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' },
-    sectionTitle: { margin: 0, color: '#1e293b', fontSize: '18px' },
-    viewAllBtn: { background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', fontWeight: '600' },
-    recentList: { display: 'flex', flexDirection: 'column', gap: '15px' },
-    atletaItem: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '15px', borderBottom: '1px solid #f1f5f9' },
-    atletaInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
-    avatar: { width: '40px', height: '40px', backgroundColor: '#e2e8f0', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bold', color: '#64748b' },
-    atletaName: { fontWeight: '600', color: '#334155' },
-    atletaEmail: { fontSize: '12px', color: '#94a3b8' },
-    miniBtn: { padding: '6px 12px', borderRadius: '6px', border: '1px solid #e2e8f0', backgroundColor: 'white', cursor: 'pointer', fontSize: '12px' },
-    emptyText: { textAlign: 'center', color: '#94a3b8', padding: '20px' }
 };
 
 export default ResumenInicio;

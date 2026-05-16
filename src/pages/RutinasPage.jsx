@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import PlanificadorRutina from '../components/PlanificadorRutina';
-import { globalStyles, colors } from '../styles/globalStyles'; 
 
 const RutinasPage = () => {
     const [templates, setTemplates] = useState([]);
@@ -79,32 +78,31 @@ const RutinasPage = () => {
         }
     };
 
-    if (loading) return <p style={{padding: '20px', textAlign: 'center', color: colors.textMuted}}>Cargando biblioteca de rutinas...</p>;
+    if (loading) return <p style={{padding: '20px', textAlign: 'center', color: 'var(--coach-text-muted)'}}>Cargando biblioteca de rutinas...</p>;
 
     return (
-        <div style={globalStyles.pageContainer}>
-            <div style={globalStyles.pageHeader}>
+        <div>
+            <div className="coach-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                    <h2 style={globalStyles.title}>Biblioteca de Rutinas</h2>
-                    <p style={globalStyles.subtitle}>Crea plantillas base y asígnalas rápidamente a tu alumno.</p>
+                    <h2 style={{ margin: 0 }}>Biblioteca de Rutinas</h2>
+                    <p style={{ color: 'var(--coach-text-muted)', margin: '5px 0 0 0' }}>Crea plantillas base y asígnalas rápidamente a tu alumno.</p>
                 </div>
                 <button 
                     onClick={() => {
                         setShowBuilder(!showBuilder);
-                        if (showBuilder) setTemplateToEdit(null); // Limpiamos el estado si cerramos el creador
+                        if (showBuilder) setTemplateToEdit(null);
                     }} 
-                    style={showBuilder ? globalStyles.btnCancel : globalStyles.btnPrimary}
+                    className={`coach-btn ${showBuilder ? 'coach-btn-danger' : 'coach-btn-primary'}`}
                 >
                     {showBuilder ? '✕ Cerrar Creador' : '+ Nueva Plantilla Base'}
                 </button>
             </div>
 
             {showBuilder && (
-                <div style={{ borderTop: `2px dashed ${colors.border}`, paddingTop: '24px', marginBottom: '40px' }}>
-                    <h3 style={{ color: colors.textDark, marginBottom: '20px', fontSize: '20px' }}>
+                <div style={{ borderTop: '2px dashed var(--coach-border)', paddingTop: '24px', marginBottom: '40px' }}>
+                    <h3 style={{ color: 'var(--coach-text-dark)', marginBottom: '20px', fontSize: '20px' }}>
                         {templateToEdit ? 'Editando Plantilla' : 'Diseñar Nueva Plantilla'}
                     </h3>
-                    {/* Pasamos initialTemplate y onSaveSuccess al Planificador */}
                     <PlanificadorRutina 
                         isTemplateMode={true} 
                         alumnoId={null} 
@@ -115,31 +113,33 @@ const RutinasPage = () => {
             )}
 
             {!showBuilder && (
-                <div style={globalStyles.grid}>
+                <div className="coach-grid-2">
                     {templates.length === 0 ? (
-                        <p style={globalStyles.emptyMsg}>No tienes plantillas creadas. Diseña una base de entrenamiento para empezar.</p>
+                        <p style={{ color: 'var(--coach-text-muted)', gridColumn: '1 / -1' }}>
+                            No tienes plantillas creadas. Diseña una base de entrenamiento para empezar.
+                        </p>
                     ) : (
                         templates.map(template => (
-                            <div key={template.id} style={globalStyles.card}>
-                                <div style={globalStyles.cardHeader}>
-                                    <h3 style={globalStyles.cardTitle}>{template.name}</h3>
+                            <div key={template.id} className="coach-card" style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div className="coach-card-header">
+                                    <h3 style={{ margin: 0 }}>{template.name}</h3>
                                     
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <span style={globalStyles.badge}>{template.exercises?.length || 0} Ejercicios</span>
+                                        <span className="coach-region-badge" style={{ backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0' }}>
+                                            {template.exercises?.length || 0} Ejercicios
+                                        </span>
                                         
-                                        {/* Botón de Editar (Lápiz Azul) */}
                                         <button 
                                             onClick={() => handleEditTemplate(template)}
-                                            style={{...globalStyles.btnDangerIcon, backgroundColor: '#e0f2fe', color: '#0284c7'}}
+                                            className="coach-icon-btn"
                                             title="Editar Plantilla"
                                         >
                                             ✏️
                                         </button>
 
-                                        {/* Botón de Eliminar (Basurero Rojo) */}
                                         <button 
                                             onClick={() => handleDeleteTemplate(template.id)}
-                                            style={globalStyles.btnDangerIcon}
+                                            className="coach-icon-btn"
                                             title="Eliminar Plantilla"
                                         >
                                             🗑️
@@ -147,12 +147,12 @@ const RutinasPage = () => {
                                     </div>
                                 </div>
                                 
-                                <p style={{ color: colors.textMuted, margin: '0 0 24px 0', fontSize: '14px' }}>
-                                    Bloques de trabajo: <strong style={{ color: colors.textDark }}>{new Set(template.exercises?.map(e => e.blockName)).size}</strong>
+                                <p style={{ color: 'var(--coach-text-muted)', margin: '0 0 24px 0', fontSize: '14px' }}>
+                                    Bloques de trabajo: <strong style={{ color: 'var(--coach-text-dark)' }}>{new Set(template.exercises?.map(e => e.blockName)).size}</strong>
                                 </p>
                                 
                                 <div style={{ marginTop: 'auto' }}>
-                                    <button onClick={() => openAssignModal(template)} style={globalStyles.btnSuccess}>
+                                    <button onClick={() => openAssignModal(template)} className="coach-btn coach-btn-success" style={{ width: '100%', justifyContent: 'center' }}>
                                         🎯 Asignar a Jugador
                                     </button>
                                 </div>
@@ -163,21 +163,21 @@ const RutinasPage = () => {
             )}
 
             {showAssignModal && (
-                <div style={globalStyles.modalOverlay}>
-                    <div style={globalStyles.modalContent}>
-                        <h3 style={{marginTop: 0, color: colors.textDark}}>Asignar Rutina</h3>
-                        <p style={{color: colors.textMuted, marginBottom: '24px'}}>
-                            Plantilla: <strong style={{color: colors.textDark}}>{selectedTemplate?.name}</strong>
+                <div className="coach-modal-overlay">
+                    <div className="coach-modal-content">
+                        <h3>Asignar Rutina</h3>
+                        <p style={{ color: 'var(--coach-text-muted)', marginBottom: '24px' }}>
+                            Plantilla: <strong style={{ color: 'var(--coach-text-dark)' }}>{selectedTemplate?.name}</strong>
                         </p>
                         
-                        <form onSubmit={handleAssignTemplate} style={globalStyles.formGroup}>
-                            <div>
-                                <label style={globalStyles.label}>Seleccionar Atleta:</label>
+                        <form onSubmit={handleAssignTemplate}>
+                            <div className="coach-form-group">
+                                <label className="coach-label">Seleccionar Atleta:</label>
                                 <select 
                                     required 
                                     value={assignData.alumnoId} 
                                     onChange={e => setAssignData({...assignData, alumnoId: e.target.value})}
-                                    style={globalStyles.input}
+                                    className="coach-select"
                                 >
                                     <option value="">Elegir jugador...</option>
                                     {athletes.map(ath => (
@@ -191,20 +191,24 @@ const RutinasPage = () => {
                                 </select>
                             </div>
 
-                            <div>
-                                <label style={globalStyles.label}>Fecha de Ejecución:</label>
+                            <div className="coach-form-group">
+                                <label className="coach-label">Fecha de Ejecución:</label>
                                 <input 
                                     type="date" 
                                     required 
                                     value={assignData.scheduledDate} 
                                     onChange={e => setAssignData({...assignData, scheduledDate: e.target.value})}
-                                    style={globalStyles.input}
+                                    className="coach-input"
                                 />
                             </div>
 
-                            <div style={globalStyles.modalActions}>
-                                <button type="button" onClick={() => setShowAssignModal(false)} style={{...globalStyles.btnCancel, flex: 1}}>Cancelar</button>
-                                <button type="submit" style={{...globalStyles.btnPrimary, flex: 1}}>Confirmar Asignación</button>
+                            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                                <button type="button" onClick={() => setShowAssignModal(false)} className="coach-btn coach-btn-danger" style={{ flex: 1, justifyContent: 'center' }}>
+                                    Cancelar
+                                </button>
+                                <button type="submit" className="coach-btn coach-btn-primary" style={{ flex: 1, justifyContent: 'center' }}>
+                                    Confirmar Asignación
+                                </button>
                             </div>
                         </form>
                     </div>

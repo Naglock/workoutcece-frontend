@@ -69,6 +69,7 @@
     z-index: 10;
     padding-bottom: env(safe-area-inset-bottom);
     box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.05);
+    border-bottom: 5px solid red;
 }
 
 .athlete-nav-btn {
@@ -115,4 +116,414 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.8px;
+}
+.atleta-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid rgba(0,0,0,0.05);
+    padding-bottom: 20px;
+}
+
+.atleta-logo {
+    width: 60px;
+    height: auto;
+}
+
+.atleta-title {
+    font-size: 18px;
+    margin: 0;
+    font-weight: 800;
+    color: #d4af37;
+}
+
+.atleta-subtitle {
+    color: #64748b;
+    font-size: 14px;
+    margin: 3px 0 0 0;
+    font-weight: 600;
+}
+
+.atleta-date-container {
+    margin-bottom: 30px;
+    padding: 0 5px;
+}
+
+.atleta-date-text {
+    color: #0f172a;
+    font-size: 15px;
+    margin: 0;
+    font-weight: 700;
+}
+
+.atleta-time-text {
+    color: #64748b;
+    font-size: 13px;
+    margin: 3px 0 0 0;
+    font-weight: 500;
+}
+
+.atleta-routine-card {
+    background-color: white;
+    border-radius: 25px;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+    border: 1px solid #e2e8f0;
+}
+
+.atleta-card-decor {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    font-size: 140px;
+    color: rgba(0, 0, 255, 0.04);
+    z-index: 1;
+    font-weight: 800;
+    transform: rotate(-15deg);
+}
+
+.atleta-card-content {
+    position: relative;
+    z-index: 2;
+}
+
+.atleta-card-badge {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    background: linear-gradient(135deg, #ff0000 0%, #ef4444 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 0 0 0 20px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.atleta-card-subtitle {
+    color: #0000ff;
+    font-size: 13px;
+    margin: 0;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.atleta-card-title {
+    color: #0f172a;
+    font-size: 24px;
+    margin: 8px 0 5px 0;
+    font-weight: 800;
+}
+
+.atleta-card-desc {
+    color: #64748b;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.atleta-card-divider {
+    height: 2px;
+    background: #d4af37;
+    margin: 20px 0;
+    opacity: 0.3;
+}
+
+.atleta-card-btn {
+    background: linear-gradient(135deg, #0000ff 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 16px 25px;
+    border-radius: 15px;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 6px 15px rgba(0, 0, 255, 0.3);
+    transition: transform 0.2s;
+}
+
+.atleta-card-btn:hover {
+    transform: translateY(-2px);
+}
+
+.atleta-spacer {
+    height: 50px;
+}
+
+.coach-page-header {
+    margin-bottom: 20px;
+}
+
+.coach-back-link {
+    border: none;
+    background: none;
+    color: var(--coach-primary);
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.coach-back-link:hover {
+    text-decoration: underline;
+}
+
+.coach-tabs {
+    display: flex;
+    gap: 10px;
+    border-bottom: 2px solid var(--coach-border);
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.coach-tab {
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    color: var(--coach-text-muted);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.coach-tab:hover {
+    background-color: var(--coach-surface);
+    color: var(--coach-text-dark);
+}
+
+.coach-tab.active {
+    background-color: var(--coach-primary);
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 255, 0.2);
+}
+
+.coach-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.coach-form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.coach-form-row > div {
+    flex: 1;
+}
+
+.coach-textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--coach-border);
+    font-size: 14px;
+    color: var(--coach-text-dark);
+    background-color: var(--coach-surface);
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    height: 100px;
+    resize: none;
+}
+
+.coach-textarea:focus {
+    outline: none;
+    border-color: var(--coach-primary);
+    box-shadow: 0 0 0 3px rgba(0, 0, 255, 0.1);
+}
+
+.coach-btn-success {
+    background-color: #10b981;
+    color: white;
+}
+
+.coach-btn-success:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+}
+/* --- Componentes de "Ejecutar Rutina" (Modo Activo) --- */
+
+.atleta-workout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(0,0,0,0.05);
+}
+
+.atleta-back-btn {
+    background: #fee2e2;
+    color: #ff0000; /* Rojo Excelsior para salida de emergencia */
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.atleta-back-btn:active {
+    transform: scale(0.9);
+}
+
+.atleta-workout-title {
+    text-align: center;
+}
+
+.atleta-workout-title h2 {
+    margin: 3px 0 0 0;
+    font-size: 18px;
+    color: #0f172a;
+    font-weight: 800;
+}
+
+.atleta-workout-badge {
+    background-color: #dcfce7;
+    color: #16a34a;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+}
+
+.atleta-timer {
+    font-family: monospace;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0000ff; /* Azul Excelsior */
+    background: rgba(0, 0, 255, 0.08);
+    padding: 6px 12px;
+    border-radius: 10px;
+}
+
+.atleta-exercise-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 25px;
+}
+
+.atleta-exercise-number {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0 0 5px 0;
+    letter-spacing: 0.5px;
+}
+
+.atleta-exercise-name {
+    color: #0f172a;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 25px 0;
+    line-height: 1.2;
+}
+
+.atleta-set-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.atleta-set-row {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr 1fr 0.5fr;
+    gap: 10px;
+    align-items: center;
+    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+    background-color: #f8fafc;
+}
+
+.atleta-set-row.header {
+    background-color: transparent;
+    font-size: 12px;
+    font-weight: 800;
+    color: #64748b;
+    padding: 0 12px;
+    text-transform: uppercase;
+}
+
+.atleta-set-row.active {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+}
+
+.atleta-set-num {
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 16px;
+}
+
+.atleta-workout-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.atleta-workout-input:focus {
+    outline: none;
+    border-color: #0000ff;
+    box-shadow: 0 0 0 3px rgba(0, 0, 255, 0.1);
+}
+
+.atleta-workout-input:disabled {
+    background-color: #e2e8f0;
+    color: #94a3b8;
+    border-color: transparent;
+}
+
+.atleta-check-btn {
+    background-color: #10b981; 
+    color: white;
+    border: none;
+    height: 40px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.atleta-check-btn:active {
+    transform: scale(0.9);
+}
+
+.atleta-check-btn.disabled {
+    background-color: #cbd5e1;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.atleta-workout-controls {
+    margin-top: 10px;
 }
