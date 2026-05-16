@@ -9,6 +9,9 @@ import ResumenInicio from './pages/ResumenInicio';
 import AtletaDetalle from './pages/AtletaDetalle';
 import EjerciciosPage from './pages/EjerciciosPages';
 import RutinasPage from './pages/RutinasPage';
+import AtletaLayout from './components/AtletaLayout';
+import AtletaInicio from './pages/AtletaInicio';
+import EjecutarRutina from './pages/EjecutarRutina';
 
 function App() {
     return (
@@ -35,7 +38,7 @@ function App() {
                     path="/atleta" 
                     element={
                         <ProtectedRoute allowedRoles={['ROLE_ALUMNO', 'ALUMNO']}>
-                            <AthleteLayout />
+                            <AtletaLayout />
                         </ProtectedRoute>
                     } 
                 >

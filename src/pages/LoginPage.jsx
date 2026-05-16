@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { jwtDecode } from 'jwt-decode';
+import { globalStyles } from '../styles/globalStyles';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -24,15 +25,15 @@ const LoginPage = () => {
             });
             const token = response.data.token;
             const decoded = jwtDecode(token);
-            if ((decoded.role !== 'COACH') && (decoded.role !== 'ROLE_COACH')) {
-                setError('Acceso denegado: Solo los entrenadores pueden ingresar. Por favor, utiliza la aplicación móvil si eres un atleta.');
-                setIsLoading(false);
-                return;
+            if (decoded.role === 'ROLE_COACH' || decoded.role === 'COACH') {
+                localStorage.setItem('token', token);
+                navigate('/dashboard');
+            } else if (decoded.role === 'ROLE_ALUMNO' || decoded.role === 'ALUMNO') {
+                navigate('/alumno-app');
+            } else {
+                setError('Rol de usuario no reconocido. Contacta al soporte.');
+                localStorage.removeItem('token');
             }
-            localStorage.setItem('token', token);
-
-            navigate('/dashboard');
-
         } catch (err) {
             if (err.response && err.response.status === 401) {
                 setError('Usuario o contraseña incorrectos.');
@@ -45,39 +46,39 @@ const LoginPage = () => {
     };
 
     return (
-        <div style={styles.container}>
-            <div style={styles.card}>
-                <h2 style={styles.title}>WorkoutCeCeApp</h2>
-                <p style={styles.subtitle}>Portal del Entrenador</p>
+        <div style={globalStyles.container}>
+            <div style={globalStyles.card}>
+                <h2 style={globalStyles.title}>WorkoutCeCeApp</h2>
+                <p style={globalStyles.subtitle}>Portal del Entrenador</p>
 
-                {error && <div style={styles.errorBox}>{error}</div>}
+                {error && <div style={globalStyles.errorBox}>{error}</div>}
 
-                <form onSubmit={handleLogin} style={styles.form}>
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Usuario</label>
+                <form onSubmit={handleLogin} style={globalStyles.form}>
+                    <div style={globalStyles.inputGroup}>
+                        <label style={globalStyles.label}>Usuario</label>
                         <input 
                             type="text" 
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            style={styles.input}
+                            style={globalStyles.input}
                             required
                         />
                     </div>
 
-                    <div style={styles.inputGroup}>
-                        <label style={styles.label}>Contraseña</label>
+                    <div style={globalStyles.inputGroup}>
+                        <label style={globalStyles.label}>Contraseña</label>
                         <input 
                             type="password" 
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            style={styles.input}
+                            style={globalStyles.input}
                             required
                         />
                     </div>
 
                     <button 
                         type="submit" 
-                        style={styles.button} 
+                        style={globalStyles.button} 
                         disabled={isLoading}
                     >
                         {isLoading ? 'Conectando...' : 'Ingresar'}
