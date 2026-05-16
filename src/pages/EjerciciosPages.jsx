@@ -5,11 +5,9 @@ const EjerciciosPage = () => {
     const [exercises, setExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     
-    // --- ESTADOS PARA BÚSQUEDA Y FILTROS ---
     const [searchTerm, setSearchTerm] = useState('');
     const [regionFilter, setRegionFilter] = useState('');
 
-    // Estados para el Modal/Formulario
     const [showForm, setShowForm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({ id: null, name: '', bodyRegion: '', videoUrl: '', description: '' });
@@ -27,33 +25,29 @@ const EjerciciosPage = () => {
         } finally { setLoading(false); }
     };
 
-    // --- LÓGICA DE FILTRADO ---
     const filteredExercises = exercises.filter(ex => {
         const matchesName = ex.name.toLowerCase().includes(searchTerm.toLowerCase());
-        // Si no hay filtro de región seleccionado, pasa. Si hay, debe coincidir.
         const matchesRegion = regionFilter === '' || ex.bodyRegion === regionFilter;
         return matchesName && matchesRegion;
     });
 
-    // --- LÓGICA DE COLORES PARA LAS ZONAS DEL CUERPO ---
     const getRegionStyle = (region) => {
         const normalized = region?.toLowerCase() || '';
         if (normalized.includes('upper') || normalized.includes('superior')) {
-            return { backgroundColor: '#dbeafe', color: '#1e40af', border: '1px solid #bfdbfe' }; // Azul
+            return { backgroundColor: '#dbeafe', color: '#1e40af', border: '1px solid #bfdbfe' };
         }
         if (normalized.includes('lower') || normalized.includes('inferior')) {
-            return { backgroundColor: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0' }; // Verde
+            return { backgroundColor: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0' };
         }
         if (normalized.includes('core')) {
-            return { backgroundColor: '#ffedd5', color: '#9a3412', border: '1px solid #fed7aa' }; // Naranja
+            return { backgroundColor: '#ffedd5', color: '#9a3412', border: '1px solid #fed7aa' };
         }
         if (normalized.includes('full')) {
-            return { backgroundColor: '#f3e8ff', color: '#6b21a8', border: '1px solid #e9d5ff' }; // Morado
+            return { backgroundColor: '#f3e8ff', color: '#6b21a8', border: '1px solid #e9d5ff' };
         }
-        return { backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0' }; // Gris por defecto
+        return { backgroundColor: '#f1f5f9', color: '#475569', border: '1px solid #e2e8f0' }; 
     };
 
-    // --- MANEJO DEL FORMULARIO ---
     const handleOpenCreate = () => {
         setFormData({ id: null, name: '', bodyRegion: '', videoUrl: '', description: '' });
         setIsEditing(false);
@@ -112,7 +106,6 @@ const EjerciciosPage = () => {
         }
     };
 
-    // Obtener lista única de regiones para el dropdown del filtro
     const uniqueRegions = [...new Set(exercises.map(ex => ex.bodyRegion).filter(Boolean))];
 
     if (loading) return <p style={{padding: '20px'}}>Cargando biblioteca de ejercicios...</p>;

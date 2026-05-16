@@ -8,13 +8,11 @@ const RutinasPage = () => {
     const [athletes, setAthletes] = useState([]);
     const [loading, setLoading] = useState(true);
     
-    // UI States
     const [showBuilder, setShowBuilder] = useState(false);
     const [showAssignModal, setShowAssignModal] = useState(false);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [templateToEdit, setTemplateToEdit] = useState(null); 
     
-    // Formulario de asignación
     const [assignData, setAssignData] = useState({ alumnoId: '', scheduledDate: '' });
 
     useEffect(() => {
@@ -24,11 +22,9 @@ const RutinasPage = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            // 1. Obtenemos las plantillas del coach
             const tempRes = await api.get('/workouts/templates');
             setTemplates(tempRes.data);
 
-            // 2. Obtenemos la lista de atletas
             const athRes = await api.get('/coach/athletes'); 
             setAthletes(Array.isArray(athRes.data) ? athRes.data : []);
         } catch (err) {
@@ -38,7 +34,6 @@ const RutinasPage = () => {
         }
     };
 
-    // --- LÓGICA DE ASIGNACIÓN ---
     const openAssignModal = (template) => {
         setSelectedTemplate(template);
         setAssignData({ alumnoId: '', scheduledDate: '' });
@@ -57,7 +52,6 @@ const RutinasPage = () => {
         }
     };
 
-    // --- LÓGICA DE EDICIÓN ---
     const handleEditTemplate = (template) => {
         setTemplateToEdit(template);
         setShowBuilder(true);
@@ -69,8 +63,7 @@ const RutinasPage = () => {
         setTemplateToEdit(null);
         fetchData(); 
     };
-
-    // --- LÓGICA DE ELIMINACIÓN ---
+    
     const handleDeleteTemplate = async (templateId) => {
         const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar esta plantilla base? Esta acción no se puede deshacer.");
         

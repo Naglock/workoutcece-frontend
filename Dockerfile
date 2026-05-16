@@ -4,7 +4,6 @@ WORKDIR /app
 COPY package*.json package-lock.json ./
 RUN npm install
 COPY . .
-# Asumo que usas Vite (dist). Si usas Create React App, cambia 'dist' por 'build' en la línea 12.
 RUN npm run build
 
 # ETAPA 2: Servidor Web (Nginx)

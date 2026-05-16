@@ -143,7 +143,6 @@ const styles = {
     empty: { padding: '30px', textAlign: 'center', color: '#94a3b8' },
     error: { color: '#ef4444', backgroundColor: '#fee2e2', padding: '10px', borderRadius: '4px' },
     
-    // ESTILOS DEL MODAL
     modalOverlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 },
     modalContent: { backgroundColor: 'white', padding: '25px', borderRadius: '8px', width: '400px', maxWidth: '90%', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' },
     linkContainer: { display: 'flex', gap: '10px', marginTop: '15px' },

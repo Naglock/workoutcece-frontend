@@ -1,27 +1,63 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
+import PlanificadorRutina from './PlanificadorRutina';
 
 const HistorialRutinas = ({ alumnoId }) => {
     const [workouts, setWorkouts] = useState([]);
     const [loading, setLoading] = useState(true);
+    
+    const [rutinaEnEdicion, setRutinaEnEdicion] = useState(null);
+    const [mostrarEditor, setMostrarEditor] = useState(false);
+
+    const fetchHistorial = async () => {
+        setLoading(true);
+        try {
+            const response = await api.get(`/workouts/my-routine/${alumnoId}`);
+            setWorkouts(response.data);
+        } catch (err) {
+            console.error("Error al cargar el historial:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchHistorial = async () => {
-            try {
-                const response = await api.get(`/workouts/my-routine/${alumnoId}`);
-                setWorkouts(response.data);
-            } catch (err) {
-                console.error("Error al cargar el historial:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         if (alumnoId) fetchHistorial();
     }, [alumnoId]);
 
+    const handleEditarClic = (workout) => {
+        setRutinaEnEdicion(workout);
+        setMostrarEditor(true);
+    };
+
+    const handleGuardarExito = () => {
+        setMostrarEditor(false);
+        setRutinaEnEdicion(null);
+        fetchHistorial();
+    };
+
     if (loading) return <p style={styles.loading}>Cargando historial de entrenamientos...</p>;
     
+    if (mostrarEditor) {
+        return (
+            <div style={styles.container}>
+                <div style={styles.editorHeader}>
+                    <h3 style={styles.sectionTitle}>✏️ Editando: {rutinaEnEdicion.name}</h3>
+                    <button onClick={() => setMostrarEditor(false)} style={styles.cancelBtn}>
+                        🔙 Cancelar / Volver
+                    </button>
+                </div>
+                
+                <PlanificadorRutina 
+                    alumnoId={alumnoId} 
+                    isTemplateMode={false} 
+                    initialTemplate={rutinaEnEdicion} 
+                    onSaveSuccess={handleGuardarExito} 
+                />
+            </div>
+        );
+    }
+
     if (!workouts || workouts.length === 0) {
         return (
             <div style={styles.emptyCard}>
@@ -43,7 +79,13 @@ const HistorialRutinas = ({ alumnoId }) => {
                                     {new Date(workout.scheduledDate).toLocaleDateString('es-CL')}
                                 </span>
                             </div>
-                            <div style={styles.statusBadge}>Asignada</div>
+                            {/* --- CONTENEDOR PARA BADGE Y BOTÓN EDITAR --- */}
+                            <div style={styles.headerRight}>
+                                <div style={styles.statusBadge}>Asignada</div>
+                                <button style={styles.editBtn} onClick={() => handleEditarClic(workout)}>
+                                    ✏️ Editar
+                                </button>
+                            </div>
                         </div>
                         
                         <div style={{ overflowX: 'auto' }}>
@@ -89,9 +131,13 @@ const styles = {
     list: { display: 'flex', flexDirection: 'column', gap: '20px' },
     workoutCard: { backgroundColor: 'white', padding: '25px', borderRadius: '15px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', borderLeft: '6px solid #3b82f6' },
     cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', borderBottom: '1px solid #f1f5f9', paddingBottom: '15px' },
+    headerRight: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }, // Contenedor para alinear la etiqueta y el botón
     workoutName: { margin: 0, color: '#1e293b', fontSize: '18px', fontWeight: 'bold' },
     dateBadge: { color: '#64748b', fontSize: '14px' },
     statusBadge: { backgroundColor: '#dcfce7', color: '#166534', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase' },
+    editBtn: { backgroundColor: '#eab308', color: 'white', padding: '6px 12px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold', transition: '0.2s' },
+    editorHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' },
+    cancelBtn: { backgroundColor: '#f1f5f9', color: '#475569', padding: '8px 15px', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' },
     table: { width: '100%', borderCollapse: 'collapse', marginTop: '10px' },
     thRow: { borderBottom: '2px solid #f1f5f9' },
     th: { textAlign: 'left', padding: '10px 5px', color: '#94a3b8', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' },

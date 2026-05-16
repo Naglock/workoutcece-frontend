@@ -17,7 +17,6 @@ function App() {
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/registro" element={<RegistroPage />} /> 
                 <Route path="/descargar-app" element={<DescargaApp />} />
-                {/* Ruta protegida principal */}
                 <Route 
                     path="/dashboard" 
                     element={
@@ -32,7 +31,17 @@ function App() {
                     <Route path="ejercicios" element={<EjerciciosPage />} />
                     <Route path="rutinas" element={<RutinasPage />} />
                 </Route>
-
+                <Route 
+                    path="/atleta" 
+                    element={
+                        <ProtectedRoute allowedRoles={['ROLE_ALUMNO', 'ALUMNO']}>
+                            <AthleteLayout />
+                        </ProtectedRoute>
+                    } 
+                >
+                    <Route index element={<AtletaInicio />} /> 
+                    <Route path="rutina-activa" element={<EjecutarRutina />} />
+                </Route>
                 <Route path="*" element={<LoginPage />} />
             </Routes>
         </Router>

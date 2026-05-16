@@ -4,16 +4,13 @@ import api from '../services/api';
 import { jwtDecode } from 'jwt-decode';
 
 const LoginPage = () => {
-    // 1. Manejo del estado para los inputs y errores
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     
-    // 2. Hook de React Router para redirigir de página
     const navigate = useNavigate();
 
-    // 3. Función que se ejecuta al presionar "Ingresar"
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
@@ -26,9 +23,7 @@ const LoginPage = () => {
                 password
             });
             const token = response.data.token;
-            // Decodificamos el token
             const decoded = jwtDecode(token);
-            // Verificamos el rol del usuario (Debe ser coach para acceder al dashboard)
             if ((decoded.role !== 'COACH') && (decoded.role !== 'ROLE_COACH')) {
                 setError('Acceso denegado: Solo los entrenadores pueden ingresar. Por favor, utiliza la aplicación móvil si eres un atleta.');
                 setIsLoading(false);
@@ -36,11 +31,9 @@ const LoginPage = () => {
             }
             localStorage.setItem('token', token);
 
-            // Redirigimos al Coach a su Dashboard
             navigate('/dashboard');
 
         } catch (err) {
-            // Si el backend responde con error (ej. 401 Unauthorized)
             if (err.response && err.response.status === 401) {
                 setError('Usuario o contraseña incorrectos.');
             } else {
@@ -51,7 +44,6 @@ const LoginPage = () => {
         }
     };
 
-    // 4. Renderizado visual del formulario
     return (
         <div style={styles.container}>
             <div style={styles.card}>
