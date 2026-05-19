@@ -12,6 +12,8 @@ import RutinasPage from './pages/RutinasPage';
 import AtletaLayout from './components/AtletaLayout';
 import AtletaInicio from './pages/AtletaInicio';
 import EjecutarRutina from './pages/EjecutarRutina';
+import AtletaHistorial from './pages/AtletaHistorial';
+import AtletaRutinaPreview from './components/AtletaRutinaPreview';
 
 function App() {
     return (
@@ -41,9 +43,11 @@ function App() {
                             <AtletaLayout />
                         </ProtectedRoute>
                     } 
-                >
+                >   
                     <Route index element={<AtletaInicio />} /> 
+                    <Route path="historial" element={<AtletaHistorial />} />
                     <Route path="rutina-activa" element={<EjecutarRutina />} />
+                    <Route path="rutina-preview" element={<AtletaRutinaPreview />} />
                 </Route>
                 <Route path="*" element={<LoginPage />} />
             </Routes>

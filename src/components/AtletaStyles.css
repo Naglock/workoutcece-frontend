@@ -527,3 +527,986 @@
 .atleta-workout-controls {
     margin-top: 10px;
 }
+.atleta-section-title {
+    font-size: 14px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.8px;
+    margin: 25px 0 12px 5px;
+}
+
+.atleta-card-badge.pendiente {
+    background: linear-gradient(135deg, #ff0000 0%, #ef4444 100%); 
+}
+
+.atleta-card-badge.completado {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
+}
+
+.atleta-empty-state {
+    background-color: white;
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.atleta-stats-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+    border: 1px solid #e2e8f0;
+}
+
+.atleta-progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.atleta-progress-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.atleta-progress-text span {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.atleta-progress-text strong {
+    font-size: 15px;
+    color: #0f172a;
+}
+
+.atleta-progress-percentage {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0000ff;
+}
+
+.atleta-progress-bar-bg {
+    width: 100%;
+    height: 10px;
+    background-color: #f1f5f9;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.atleta-progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #0000ff 0%, #2563eb 100%); 
+    border-radius: 10px;
+    transition: width 0.4s ease-out;
+}
+
+.atleta-activity-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 25px 20px 20px 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+    border: 1px solid #e2e8f0;
+}
+
+.atleta-chart-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 130px; 
+    padding-top: 15px;
+}
+
+.atleta-chart-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.atleta-chart-bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100px;
+    width: 100%;
+    position: relative;
+}
+
+.atleta-bar-value {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.atleta-chart-bar {
+    width: 14px;
+    background-color: #f1f5f9;
+    border-radius: 4px;
+    transition: height 0.3s ease;
+}
+
+.atleta-chart-bar.filled {
+    background: linear-gradient(to top, #0000ff, #3b82f6);
+}
+
+.atleta-chart-bar.scheduled {
+    background-color: rgba(212, 175, 55, 0.4);
+    border: 1px dashed #d4af37;
+}
+
+.atleta-chart-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    margin-top: 10px;
+}
+.atleta-agenda-container {
+    padding: 10px 5px;
+}
+
+.atleta-agenda-header {
+    margin-bottom: 25px;
+    padding-left: 5px;
+}
+
+.atleta-agenda-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+}
+
+.atleta-agenda-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+    font-weight: 500;
+}
+
+.atleta-agenda-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.atleta-agenda-item {
+    background-color: white;
+    border-radius: 20px;
+    padding: 18px 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+    border: 1px solid #e2e8f0;
+}
+
+.atleta-agenda-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.atleta-agenda-date {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #0000ff;
+    letter-spacing: 0.5px;
+}
+
+.atleta-agenda-badge {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white;
+}
+
+.atleta-agenda-badge.pendiente {
+    background: linear-gradient(135deg, #ff0000 0%, #ef4444 100%);
+}
+
+.atleta-agenda-badge.completado {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.atleta-agenda-card-title {
+    margin: 0 0 4px 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.atleta-agenda-card-info {
+    margin: 0 0 16px 0;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.atleta-agenda-action-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #0000ff 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 255, 0.2);
+    transition: transform 0.1s;
+}
+
+.atleta-agenda-action-btn:active {
+    transform: scale(0.98);
+}
+
+.atleta-agenda-completed-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px dashed #e2e8f0;
+    font-size: 13px;
+    color: #475569;
+}
+
+.atleta-agenda-completed-summary strong {
+    color: #10b981;
+    font-weight: 700;
+}
+
+.atleta-agenda-view-btn {
+    padding: 6px 14px;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.atleta-run-container, .atleta-feedback-container {
+    padding: 10px 5px;
+}
+
+.atleta-run-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.atleta-run-close-btn {
+    background-color: #fee2e2;
+    color: #ef4444;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.atleta-run-title-zone {
+    text-align: center;
+}
+
+.atleta-run-badge {
+    background-color: #fee2e2;
+    color: #ef4444;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+}
+
+.atleta-run-routine-name {
+    margin: 2px 0 0 0;
+    font-size: 16px;
+    color: #0f172a;
+    font-weight: 800;
+}
+
+.atleta-run-timer {
+    font-family: monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0000ff;
+    background: rgba(0, 0, 255, 0.06);
+    padding: 6px 12px;
+    border-radius: 10px;
+}
+
+.atleta-block-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.atleta-block-tab {
+    padding: 8px 16px;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.atleta-block-tab.active {
+    background-color: #0f172a;
+    color: white;
+    border-color: #0f172a;
+}
+
+.atleta-block-current-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 15px 5px;
+}
+
+.atleta-run-exercise-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 16px;
+}
+
+.atleta-run-exercise-name {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.atleta-run-exercise-notes {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.4;
+}
+
+.atleta-run-exercise-rest {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.atleta-run-sets-table {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.atleta-run-row {
+    display: grid;
+    grid-template-columns: 0.6fr 1fr 1fr 0.6fr;
+    gap: 8px;
+    align-items: center;
+    text-align: center;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    border: 1px solid transparent;
+}
+
+.atleta-run-row.header {
+    background-color: transparent;
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    padding: 0 10px;
+}
+
+.atleta-run-row.completed {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+}
+
+.atleta-run-set-number {
+    font-weight: 700;
+    color: #475569;
+}
+
+.atleta-run-row.completed .atleta-run-set-number {
+    color: #065f46;
+}
+
+.atleta-run-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.atleta-run-input:disabled {
+    background-color: transparent;
+    border-color: transparent;
+    color: #065f46;
+}
+
+.atleta-run-check-btn {
+    background-color: white;
+    color: #cbd5e1;
+    border: 2px solid #e2e8f0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.atleta-run-check-btn.checked {
+    background-color: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+
+.atleta-run-footer-controls {
+    margin-top: 25px;
+}
+
+.atleta-run-next-btn, .atleta-run-end-btn {
+    width: 100%;
+    padding: 14px;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.atleta-run-next-btn {
+    background-color: #0f172a;
+}
+
+.atleta-run-end-btn {
+    background: linear-gradient(135deg, #0000ff 0%, #2563eb 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 255, 0.2);
+}
+
+.atleta-feedback-header {
+    margin-bottom: 25px;
+    padding-left: 5px;
+}
+
+.atleta-feedback-header h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+}
+
+.atleta-feedback-header p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.atleta-feedback-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 16px;
+}
+
+.atleta-feedback-summary-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.atleta-feedback-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #475569;
+}
+
+.atleta-feedback-row:last-child {
+    margin-bottom: 0;
+}
+
+.atleta-feedback-row strong {
+    color: #0f172a;
+}
+
+.atleta-feedback-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.atleta-rpe-display {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.atleta-rpe-number {
+    font-size: 36px;
+    font-weight: 800;
+    color: #0000ff;
+    display: block;
+    line-height: 1;
+}
+
+.atleta-rpe-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.atleta-rpe-slider {
+    width: 100%;
+    margin: 10px 0;
+    accent-color: #0000ff;
+}
+
+.atleta-slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    padding: 0 5px;
+}
+
+.atleta-feedback-textarea {
+    width: 100%;
+    height: 100px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    padding: 12px;
+    font-size: 14px;
+    color: #0f172a;
+    outline: none;
+    box-sizing: border-box;
+    resize: none;
+}
+
+.atleta-feedback-textarea:focus {
+    border-color: #0000ff;
+}
+
+.atleta-feedback-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.atleta-feedback-submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.atleta-feedback-back-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: transparent;
+    color: #64748b;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.atleta-empty-state-fallback {
+    background-color: #ffffff;
+    border: 2px dashed #cbd5e1;
+    border-radius: 20px;
+    padding: 25px 20px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+}
+
+.atleta-empty-state-fallback p {
+    margin: 0 0 6px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.atleta-fallback-hint {
+    font-size: 13px;
+    color: #64748b;
+    display: block;
+    margin-bottom: 18px;
+    line-height: 1.4;
+}
+
+.atleta-fallback-btn {
+    background-color: #f1f5f9;
+    color: #0000ff;
+    border: 1px solid #bfdbfe;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.atleta-fallback-btn:active {
+    background-color: #e2e8f0;
+}
+
+.atleta-routines-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+/* --- CALENDARIO SEMANAL --- */
+.atleta-week-selector {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    padding: 15px 10px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 25px;
+}
+
+.atleta-day-bubble {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 60px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.atleta-day-bubble:active {
+    transform: scale(0.95);
+}
+
+.atleta-day-bubble.active {
+    background-color: #0f172a;
+    box-shadow: 0 6px 15px rgba(15, 23, 42, 0.2);
+}
+
+.atleta-day-name {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.atleta-day-number {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.atleta-day-bubble.active .atleta-day-name,
+.atleta-day-bubble.active .atleta-day-number {
+    color: white;
+}
+
+.atleta-day-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #2563eb;
+    margin-top: 4px;
+    opacity: 0;
+}
+
+.atleta-day-dot.visible {
+    opacity: 1;
+}
+
+.atleta-day-bubble.active .atleta-day-dot {
+    background-color: #60a5fa;
+}
+
+/* --- BOTÓN TARJETA INICIO --- */
+.atleta-card-btn-outline {
+    width: 100%;
+    padding: 10px;
+    background-color: #f8fafc;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.atleta-preview-container {
+    padding: 10px;
+}
+
+.atleta-preview-header {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.atleta-preview-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 10px 0 5px 0;
+    line-height: 1.2;
+}
+
+.atleta-preview-subtitle {
+    font-size: 15px;
+    color: #64748b;
+    font-weight: 500;
+    margin: 0;
+}
+
+.atleta-preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.atleta-preview-item {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    padding: 15px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.atleta-preview-item-number {
+    width: 32px;
+    height: 32px;
+    background-color: #f1f5f9;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 14px;
+    margin-right: 15px;
+}
+
+.atleta-preview-item-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.atleta-preview-item-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.atleta-preview-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 40px;
+}
+
+.atleta-preview-btn-start {
+    padding: 16px;
+    background: linear-gradient(135deg, #0000ff 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 0, 255, 0.2);
+}
+
+.atleta-preview-btn-back {
+    padding: 16px;
+    background-color: transparent;
+    color: #64748b;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* --- COMPONENTE PROGRESO SALTOS --- */
+.atleta-progress-panel {
+    padding: 10px 5px;
+}
+
+.atleta-jump-tabs {
+    display: flex;
+    gap: 6px;
+    background-color: #f1f5f9;
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.atleta-jump-tab-btn {
+    flex: 1;
+    padding: 8px 4px;
+    border: none;
+    background-color: transparent;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: 9px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.atleta-jump-tab-btn.active {
+    background-color: white;
+    color: #0f172a;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.style-chart-wrapper {
+    min-height: 230px;
+    display: flex;
+    flex-direction: column;
+}
+
+.atleta-chart-loading, .atleta-chart-insufficient {
+    margin: auto;
+    font-size: 13px;
+    color: #64748b;
+    text-align: center;
+    font-weight: 500;
+    padding: 20px;
+}
+
+.atleta-svg-graph {
+    width: 100%;
+    height: auto;
+    margin-top: 15px;
+    overflow: visible;
+}
+
+.atleta-svg-text-y {
+    font-size: 10px;
+    font-weight: 700;
+    fill: #94a3b8;
+}
+
+.atleta-svg-text-x {
+    font-size: 10px;
+    font-weight: 700;
+    fill: #64748b;
+}
+
+.atleta-svg-text-value {
+    font-size: 11px;
+    font-weight: 800;
+    fill: #059669;
+}
+
+/* --- TABLA DETALLE HISTÓRICO --- */
+.atleta-history-table-card {
+    background-color: white;
+    border-radius: 20px;
+    padding: 15px 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+    border: 1px solid #e2e8f0;
+    margin-top: 16px;
+}
+
+.atleta-table-header-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.atleta-table-body-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.atleta-table-body-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px dashed #f1f5f9;
+    font-size: 14px;
+    color: #334155;
+}
+
+.atleta-table-body-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.atleta-table-body-item strong {
+    color: #0f172a;
+    font-weight: 700;
+}
