@@ -3,7 +3,12 @@ import api from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 const ResumenInicio = () => {
-    const [stats, setStats] = useState({ totalAtletas: 0, ultimosAtletas: [] });
+    const [stats, setStats] = useState({ 
+        totalAtletas: 0, 
+        ultimosAtletas: [], 
+        rutinasPendientes: 0,
+        rutinasCompletadas: 0 
+    });
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -11,11 +16,41 @@ const ResumenInicio = () => {
         const fetchDashboardData = async () => {
             try {
                 const response = await api.get('/coach/athletes');
-                const data = response.data;
+                const atletas = response.data;
                 
+                let totalPendientes = 0;
+                let totalCompletadas = 0;
+
+                if (atletas.length > 0) {
+                    const rutinasPromises = atletas.map(atleta => 
+                        api.get(`/workouts/my-routine/${atleta.id}`).catch(() => ({ data: [] }))
+                    );
+                    
+                    const rutinasResults = await Promise.all(rutinasPromises);
+                    
+                    rutinasResults.forEach(res => {
+                        const rutinasAlumno = res.data || [];
+                        
+                        const pendientesAlumno = rutinasAlumno.filter(r => {
+                            const estado = (r.estado || r.status || '').toUpperCase();
+                            return estado !== 'COMPLETADA';
+                        });
+                        
+                        const completadasAlumno = rutinasAlumno.filter(r => {
+                            const estado = (r.estado || r.status || '').toUpperCase();
+                            return estado === 'COMPLETADA';
+                        });
+
+                        totalPendientes += pendientesAlumno.length;
+                        totalCompletadas += completadasAlumno.length;
+                    });
+                }
+
                 setStats({
-                    totalAtletas: data.length,
-                    ultimosAtletas: data.slice(0, 5)
+                    totalAtletas: atletas.length,
+                    ultimosAtletas: atletas.slice(0, 5),
+                    rutinasPendientes: totalPendientes,
+                    rutinasCompletadas: totalCompletadas
                 });
             } catch (err) {
                 console.error("Error cargando resumen:", err);
@@ -41,7 +76,15 @@ const ResumenInicio = () => {
                 </div>
                 <div className="coach-stat-card">
                     <span className="coach-stat-label">Rutinas Pendientes</span>
-                    <span className="coach-stat-number">--</span>
+                    <span className="coach-stat-number" style={{ color: stats.rutinasPendientes > 0 ? '#eab308' : 'inherit' }}>
+                        {stats.rutinasPendientes}
+                    </span>
+                </div>
+                <div className="coach-stat-card">
+                    <span className="coach-stat-label">Rutinas Completadas</span>
+                    <span className="coach-stat-number" style={{ color: stats.rutinasCompletadas > 0 ? '#22c55e' : 'inherit' }}>
+                        {stats.rutinasCompletadas}
+                    </span>
                 </div>
             </div>
 

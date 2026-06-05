@@ -33,18 +33,9 @@
 }
 
 .descarga-icon-check {
-    width: 65px;
-    height: 65px;
-    background-color: #dcfce7;
-    color: #16a34a;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 32px;
-    font-weight: bold;
-    margin: 0 auto 20px;
-    box-shadow: 0 4px 10px rgba(22, 163, 74, 0.2);
+    color: #22c55e;
+    font-size: 48px;
+    margin-bottom: 10px;
 }
 
 .descarga-title {
@@ -68,21 +59,18 @@
 }
 
 .descarga-store-btn {
-    border: none;
-    padding: 14px 20px;
-    border-radius: 14px;
+    background-color: #facc15; 
+    color: #0f172a;           
+    padding: 15px 30px;
+    border-radius: 12px;
+    font-weight: 800;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    color: white;
+    transition: transform 0.2s;
 }
 
 .descarga-store-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    background-color: #eab308;
 }
 
 .descarga-store-btn:active {

@@ -59,7 +59,6 @@ const AtletaInicio = () => {
                 const alumnoId = decoded.userId; 
 
                 if (alumnoId) {
-                    // Ya no necesitamos pedir el perfil aquí, AtletaProgresoSaltos hace su propia petición.
                     const response = await api.get(`/workouts/my-routine/${alumnoId}`);
                     
                     if (response.data) {
@@ -79,7 +78,7 @@ const AtletaInicio = () => {
                         
                         setCumplimientoSemanal({
                             diasAsignados: rutinasSemana.length,
-                            diasCompletados: rutinasSemana.filter(r => r.status === 'COMPLETADO' || r.isCompleted).length
+                            diasCompletados: rutinasSemana.filter(r => r.estado === 'COMPLETADO' || r.isCompleted).length
                         });
 
                         const diasMapeo = [
@@ -96,7 +95,7 @@ const AtletaInicio = () => {
                             const diaGrafico = diasMapeo.find(d => d.iso === r.fechaFormato);
                             if (diaGrafico) {
                                 diaGrafico.entreno = true;
-                                if (r.status === 'COMPLETADO' || r.isCompleted) {
+                                if (r.estado === 'COMPLETADO' || r.isCompleted) {
                                     diaGrafico.minutos += r.executionTimeMinutes || 45; 
                                 }
                             }
@@ -125,7 +124,7 @@ const AtletaInicio = () => {
         if (rutinasDeLaFecha.length > 0) {
             setPlanesMostrados(rutinasDeLaFecha);
         } else if (selectedDate === hoyIso) {
-            const pendientes = todasLasRutinas.filter(r => r.status !== 'COMPLETADO' && !r.isCompleted);
+            const pendientes = todasLasRutinas.filter(r => r.estado !== 'COMPLETADO' && !r.isCompleted);
             if (pendientes.length > 0) {
                 setPlanesMostrados([{ ...pendientes[0], name: `${pendientes[0].name} (Próxima)` }]);
             } else {
@@ -180,18 +179,36 @@ const AtletaInicio = () => {
                 <div className="atleta-empty-state"><p>Sincronizando cronograma...</p></div>
             ) : planesMostrados.length > 0 ? (
                 <div className="atleta-routines-stack">
-                    {planesMostrados.map((plan) => (
-                        <div key={plan.id} className="atleta-routine-card" onClick={() => navigate(`rutina-preview?id=${plan.id}`)} style={{ cursor: 'pointer', marginBottom: '12px' }}>
-                            <div className="atleta-card-decor">G</div>
-                            <div className="atleta-card-content">
-                                <div className={`atleta-card-badge ${(plan.status || 'PENDIENTE').toLowerCase()}`}>{plan.status || 'PENDIENTE'}</div>
-                                <h3 className="atleta-card-title">{plan.name}</h3>
-                                <p className="atleta-card-desc">{plan.exercises?.length || 0} ejercicios asignados</p>
-                                <div className="atleta-card-divider" />
-                                <button className="atleta-card-btn-outline">Ver Detalles de Sesión 👀</button>
+                    {planesMostrados.map((plan) => {
+                        const estadoReal = (plan.estado || plan.status || '').toUpperCase();
+                        const isCompletado = estadoReal === 'COMPLETADO' || estadoReal === 'COMPLETADA' || plan.isCompleted;
+
+                        return (
+                            <div 
+                                key={plan.id} 
+                                className="atleta-routine-card" 
+                                onClick={() => {
+                                    if (isCompletado) {
+                                        navigate(`editar-resultados?id=${plan.id}`);
+                                    } else {
+                                        navigate(`rutina-preview?id=${plan.id}`);
+                                    }
+                                }} 
+                                style={{ cursor: 'pointer', marginBottom: '12px' }}
+                            >
+                                <div className="atleta-card-decor">G</div>
+                                <div className="atleta-card-content">
+                                    <div className={`atleta-card-badge ${(plan.estado || 'PENDIENTE').toLowerCase()}`}>{plan.estado || 'PENDIENTE'}</div>
+                                    <h3 className="atleta-card-title">{plan.name}</h3>
+                                    <p className="atleta-card-desc">{plan.exercises?.length || 0} ejercicios asignados</p>
+                                    <div className="atleta-card-divider" />
+                                    <button className="atleta-card-btn-outline">
+                                        {isCompletado ? '✏️ Editar Resultados' : 'Ver Detalles de Sesión 👀'}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             ) : (
                 <div className="atleta-empty-state"><p>Día libre. No hay entrenamientos agendados para esta fecha.</p></div>

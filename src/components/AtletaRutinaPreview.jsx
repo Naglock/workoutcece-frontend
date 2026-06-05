@@ -4,6 +4,13 @@ import { jwtDecode } from 'jwt-decode';
 import api from '../services/api';
 import '../components/AtletaStyles.css';
 
+const extractYouTubeId = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+};
+
 const AtletaRutinaPreview = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -35,8 +42,17 @@ const AtletaRutinaPreview = () => {
         fetchPreview();
     }, [routineId]);
 
-    if (loading) return <p style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>Cargando resumen de sesión...</p>;
-    if (!routine) return <p style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>Rutina no encontrada.</p>;
+    if (loading) return <p className="atleta-loading-text">Cargando resumen de sesión...</p>;
+    if (!routine) return <p className="atleta-loading-text">Rutina no encontrada.</p>;
+
+    const ejerciciosAgrupados = routine.exercises?.reduce((acc, ex) => {
+        const bloque = ex.blockName || 'Sin Bloque Asignado';
+        if (!acc[bloque]) {
+            acc[bloque] = [];
+        }
+        acc[bloque].push(ex);
+        return acc;
+    }, {});
 
     return (
         <div className="atleta-preview-container">
@@ -51,18 +67,52 @@ const AtletaRutinaPreview = () => {
             </div>
 
             <div className="atleta-preview-content">
-                <h3 className="atleta-section-title">Ejercicios a realizar:</h3>
-                <div className="atleta-preview-list">
-                    {routine.exercises?.map((ex, idx) => (
-                        <div key={idx} className="atleta-preview-item">
-                            <span className="atleta-preview-item-number">{idx + 1}</span>
-                            <div className="atleta-preview-item-info">
-                                <h4>{ex.exercise?.name}</h4>
-                                <p>{ex.sets} series x {ex.reps} reps</p>
-                            </div>
+                <h3 className="atleta-section-title">Estructura del Entrenamiento:</h3>
+                
+                {ejerciciosAgrupados && Object.entries(ejerciciosAgrupados).map(([nombreBloque, ejercicios], indexBloque) => (
+                    <div key={indexBloque} className="atleta-preview-block-group">
+                        <div className="atleta-block-divider">
+                            <span className="atleta-block-title">{nombreBloque}</span>
+                            <div className="atleta-block-line"></div>
                         </div>
-                    ))}
-                </div>
+
+                        <div className="atleta-preview-list">
+                            {ejercicios.map((ex, idx) => {
+                                const videoId = extractYouTubeId(ex.exercise?.videoUrl);
+                                return (
+                                    <div key={idx} className="atleta-preview-item">
+                                        {videoId && (
+                                            <a 
+                                                href={ex.exercise.videoUrl} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="atleta-preview-video-square"
+                                            >
+                                                <img 
+                                                    src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`} 
+                                                    alt={`Video de ${ex.exercise?.name}`} 
+                                                />
+                                                <div className="atleta-video-play-icon-small">▶</div>
+                                            </a>
+                                        )}
+                                        
+                                        <div className="atleta-preview-item-info">
+                                            <h4>{ex.exercise?.name}</h4>
+                                            <p>
+                                                {ex.sets} series x {ex.reps} reps 
+                                                {ex.targetRpe ? ` • RPE: ${ex.targetRpe}` : ''}
+                                                {ex.targetWeight > 0 
+                                                    ? ` • ${ex.targetWeight} kg` 
+                                                    : (ex.intensityPercentage > 0 ? ` • ${ex.intensityPercentage}%` : '')}
+                                                {ex.restTime ? ` • ⏱️ ${ex.restTime}` : ''}
+                                            </p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ))}
             </div>
 
             <div className="atleta-preview-actions">

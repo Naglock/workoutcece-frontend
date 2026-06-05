@@ -11,10 +11,15 @@ const EjerciciosPage = () => {
     const [showForm, setShowForm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({ id: null, name: '', bodyRegion: '', videoUrl: '', description: '' });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 15;
 
     useEffect(() => {
         fetchExercises();
     }, []);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, regionFilter]);
 
     const fetchExercises = async () => {
         try {
@@ -24,12 +29,15 @@ const EjerciciosPage = () => {
             console.error("Error al cargar ejercicios", err);
         } finally { setLoading(false); }
     };
-
     const filteredExercises = exercises.filter(ex => {
         const matchesName = ex.name.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesRegion = regionFilter === '' || ex.bodyRegion === regionFilter;
         return matchesName && matchesRegion;
     });
+    const totalPages = Math.ceil(filteredExercises.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentExercises = filteredExercises.slice(indexOfFirstItem, indexOfLastItem);
 
     const getRegionStyle = (region) => {
         const normalized = region?.toLowerCase() || '';
@@ -82,6 +90,9 @@ const EjerciciosPage = () => {
             try {
                 await api.delete(`/exercises/${id}`);
                 fetchExercises();
+                if (currentExercises.length === 1 && currentPage > 1) {
+                    setCurrentPage(currentPage - 1);
+                }
             } catch (err) {
                 alert("No se puede eliminar: El ejercicio ya está asignado a la rutina de un atleta.");
             }
@@ -101,6 +112,7 @@ const EjerciciosPage = () => {
             });
             alert("Biblioteca importada exitosamente desde Excel");
             fetchExercises();
+            setCurrentPage(1); 
         } catch (err) {
             alert("Error al importar el Excel.");
         }
@@ -187,9 +199,9 @@ const EjerciciosPage = () => {
                 </div>
             )}
 
-            <div className="coach-card">
-                <div className="coach-table-container">
-                    <table className="coach-table">
+            <div className="coach-card" style={{ padding: 0, overflow: 'hidden' }}>
+                <div className="coach-table-container" style={{ margin: 0, border: 'none', boxShadow: 'none' }}>
+                    <table className="coach-table" style={{ margin: 0 }}>
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -199,8 +211,8 @@ const EjerciciosPage = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredExercises.length > 0 ? (
-                                filteredExercises.map(ex => (
+                            {currentExercises.length > 0 ? (
+                                currentExercises.map(ex => (
                                     <tr key={ex.id}>
                                         <td><strong>{ex.name}</strong></td>
                                         <td>
@@ -209,7 +221,7 @@ const EjerciciosPage = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            {ex.videoUrl ? <a href={ex.videoUrl} target="_blank" rel="noreferrer" style={{color: 'var(--coach-primary)'}}>Ver Demo</a> : '-'}
+                                            {ex.videoUrl ? <a href={ex.videoUrl} target="_blank" rel="noreferrer" style={{color: 'var(--coach-primary)', fontWeight: '500', textDecoration: 'none'}}>Ver Demo ▶</a> : <span style={{color: '#94a3b8'}}>-</span>}
                                         </td>
                                         <td>
                                             <button onClick={() => handleOpenEdit(ex)} className="coach-icon-btn" title="Editar">✏️</button>
@@ -219,7 +231,7 @@ const EjerciciosPage = () => {
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="4" style={{textAlign: 'center', padding: '20px', color: 'var(--coach-text-muted)'}}>
+                                    <td colSpan="4" style={{textAlign: 'center', padding: '30px', color: 'var(--coach-text-muted)'}}>
                                         No se encontraron ejercicios con esos filtros.
                                     </td>
                                 </tr>
@@ -227,6 +239,40 @@ const EjerciciosPage = () => {
                         </tbody>
                     </table>
                 </div>
+
+                {totalPages > 1 && (
+                    <div style={{ 
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
+                        padding: '15px 20px', borderTop: '1px solid #e2e8f0', backgroundColor: '#f8fafc' 
+                    }}>
+                        <span style={{ fontSize: '14px', color: '#64748b' }}>
+                            Mostrando <strong>{indexOfFirstItem + 1}</strong> a <strong>{Math.min(indexOfLastItem, filteredExercises.length)}</strong> de <strong>{filteredExercises.length}</strong> ejercicios
+                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                            <button 
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+                                disabled={currentPage === 1}
+                                className="coach-btn coach-btn-outline"
+                                style={{ padding: '6px 12px', opacity: currentPage === 1 ? 0.5 : 1, cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                            >
+                                ◀ Anterior
+                            </button>
+                            
+                            <span style={{ fontSize: '14px', fontWeight: 'bold', color: 'var(--coach-text-dark)' }}>
+                                Página {currentPage} de {totalPages}
+                            </span>
+                            
+                            <button 
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+                                disabled={currentPage === totalPages}
+                                className="coach-btn coach-btn-outline"
+                                style={{ padding: '6px 12px', opacity: currentPage === totalPages ? 0.5 : 1, cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                            >
+                                Siguiente ▶
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -4,6 +4,13 @@ import { jwtDecode } from 'jwt-decode';
 import api from '../services/api';
 import '../components/AtletaStyles.css';
 
+const extractYouTubeId = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+};
+
 const EjecutarRutina = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -15,6 +22,8 @@ const EjecutarRutina = () => {
     const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
     const [seriesCompletadas, setSeriesCompletadas] = useState({});
     const [valoresSeries, setValoresSeries] = useState({});
+    
+    const [expandedExercises, setExpandedExercises] = useState({});
     
     const [mostrarFeedback, setMostrarFeedback] = useState(false);
     const [rpe, setRpe] = useState(7);
@@ -46,7 +55,11 @@ const EjecutarRutina = () => {
 
                         const inicialCompletadas = {};
                         const inicialValores = {};
-                        rutinaEspecifica.exercises?.forEach(ex => {
+                        const inicialExpanded = {};
+                        
+                        rutinaEspecifica.exercises?.forEach((ex) => {
+                            inicialExpanded[ex.id] = false;
+
                             for (let s = 1; s <= ex.sets; s++) {
                                 const key = `${ex.id}-${s}`;
                                 inicialCompletadas[key] = false;
@@ -58,6 +71,7 @@ const EjecutarRutina = () => {
                         });
                         setSeriesCompletadas(inicialCompletadas);
                         setValoresSeries(inicialValores);
+                        setExpandedExercises(inicialExpanded);
                     }
                 }
             } catch (err) {
@@ -81,29 +95,13 @@ const EjecutarRutina = () => {
         return `${m}:${s}`;
     };
 
-    const toggleSerie = async (workoutExerciseId, setNum) => {
+    const toggleExpand = (id) => {
+        setExpandedExercises(prev => ({ ...prev, [id]: !prev[id] }));
+    };
+
+    const toggleSerie = (workoutExerciseId, setNum) => {
         const key = `${workoutExerciseId}-${setNum}`;
-        const yaCompletado = seriesCompletadas[key];
-
-        if (!yaCompletado) {
-            try {
-                const valores = valoresSeries[key];
-                const payload = {
-                    plannedExercise: { id: parseInt(workoutExerciseId) },
-                    actualWeight: parseFloat(valores.peso || 0),
-                    actualReps: parseInt(valores.reps || 0),
-                    actualRpe: parseInt(rpe)
-                };
-
-                await api.post('/api/executions/register', payload);
-                setSeriesCompletadas(prev => ({ ...prev, [key]: true }));
-            } catch (err) {
-                console.error("Error al registrar ejecución de serie:", err);
-                alert("No se pudo guardar la serie actual en el servidor.");
-            }
-        } else {
-            setSeriesCompletadas(prev => ({ ...prev, [key]: false }));
-        }
+        setSeriesCompletadas(prev => ({ ...prev, [key]: !prev[key] }));
     };
 
     const handleInputChange = (exerciseId, setNum, field, value) => {
@@ -114,9 +112,60 @@ const EjecutarRutina = () => {
         }));
     };
 
-    const handleFinalizarEntrenamiento = () => {
-        alert("¡Sesión concluida! Todas tus series ejecutadas han sido registradas.");
-        navigate('/atleta');
+    const handleIntentarTerminar = () => {
+        const faltanSeries = Object.values(seriesCompletadas).some(estado => estado === false);
+        if (faltanSeries) {
+            const confirmar = window.confirm("Aún tienes series sin marcar con el Check ✓. ¿Estás seguro de que deseas terminar la sesión?");
+            if (!confirmar) return; 
+        }
+        setMostrarFeedback(true);
+    };
+
+    const handleFinalizarEntrenamiento = async () => {
+        try {
+            const savePromises = [];
+            
+            Object.keys(seriesCompletadas).forEach(key => {
+                if (seriesCompletadas[key]) { 
+                    const [exerciseId, setNum] = key.split('-');
+                    
+                    const currentReps = parseInt(valoresSeries[key].reps || 0);
+                    const currentPeso = parseFloat(valoresSeries[key].peso || 0);
+                    
+                    const currentRm = currentReps > 0 ? (currentPeso * (1 + 0.0333 * currentReps)) : 0;
+
+                    const payload = {
+                        plannedExercise: { id: parseInt(exerciseId) },
+                        setNumber: parseInt(setNum),
+                        actualWeight: currentPeso,
+                        actualReps: currentReps,
+                        actualRpe: parseInt(rpe),
+                        athleteNotes: comentarios,
+                        estimatedRm: Math.round(currentRm)
+                    };
+                    
+                    savePromises.push(
+                        api.post('/executions/register', payload).catch(err => {
+                            console.warn(`Error guardando serie ${setNum} de ej ${exerciseId}`, err);
+                        })
+                    );
+                }
+            });
+
+            if (savePromises.length > 0) {
+                await Promise.all(savePromises);
+            }
+
+            const minutosTotales = Math.max(1, Math.round(tiempo/60));
+
+            await api.put(`/workouts/${routineId}/complete?time=${minutosTotales}`);
+
+            alert("¡Sesión concluida! El detalle de cada una de tus series ha sido registrado.");
+            navigate('/atleta');
+        } catch (err) {
+            console.error("Error global al registrar el entrenamiento:", err);
+            alert("Hubo un error al guardar los datos. Revisa la consola.");
+        }
     };
 
     if (loading) return <p style={{ padding: '20px', color: '#64748b', textAlign: 'center' }}>Iniciando panel de entrenamiento...</p>;
@@ -206,60 +255,108 @@ const EjecutarRutina = () => {
             <div className="atleta-block-content">
                 <h3 className="atleta-block-current-title">Trabajo en {currentBlock.name}</h3>
                 
-                {currentBlock.exercises.map((ex) => (
-                    <div key={ex.id} className="atleta-run-exercise-card">
-                        <div className="atleta-run-exercise-info">
-                            <h4 className="atleta-run-exercise-name">{ex.exercise?.name}</h4>
-                            {ex.notes && <p className="atleta-run-exercise-notes">💡 {ex.notes}</p>}
-                            {ex.restTime && <span className="atleta-run-exercise-rest">⏱ Descanso: {ex.restTime}</span>}
-                        </div>
+                {currentBlock.exercises.map((ex) => {
+                    const videoId = extractYouTubeId(ex.exercise?.videoUrl);
+                    const isExpanded = expandedExercises[ex.id];
 
-                        <div className="atleta-run-sets-table">
-                            <div className="atleta-run-row header">
-                                <span>Serie</span>
-                                <span>Reps</span>
-                                <span>Peso (kg)</span>
-                                <span>Check</span>
+                    return (
+                        <div key={ex.id} className="atleta-run-exercise-card" style={{ padding: '0', overflow: 'hidden' }}>
+                            <div 
+                                className="atleta-preview-item" 
+                                onClick={() => toggleExpand(ex.id)}
+                                style={{ 
+                                    cursor: 'pointer', 
+                                    border: 'none', 
+                                    borderRadius: '0',
+                                    backgroundColor: isExpanded ? '#f8fafc' : 'white'
+                                }}
+                            >
+                                {videoId && (
+                                    <a 
+                                        href={ex.exercise.videoUrl} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="atleta-preview-video-square"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <img 
+                                            src={`https://img.youtube.com/vi/${videoId}/mqdefault.jpg`} 
+                                            alt={ex.exercise?.name} 
+                                        />
+                                        <div className="atleta-video-play-icon-small">▶</div>
+                                    </a>
+                                )}
+                                
+                                <div className="atleta-preview-item-info">
+                                    <h4>{ex.exercise?.name}</h4>
+                                    <p>
+                                        {ex.sets} series x {ex.reps} reps 
+                                        {ex.targetRpe ? ` • RPE: ${ex.targetRpe}` : ''}
+                                        {ex.targetWeight > 0 
+                                            ? ` • ${ex.targetWeight} kg` 
+                                            : (ex.intensityPercentage > 0 ? ` • ${ex.intensityPercentage}%` : '')}
+                                        {ex.restTime ? ` • ⏱️ ${ex.restTime}` : ''}
+                                    </p>
+                                </div>
+
+                                <div className="atleta-expand-icon">
+                                    {isExpanded ? '▲' : '▼'}
+                                </div>
                             </div>
 
-                            {Array.from({ length: ex.sets }).map((_, sIdx) => {
-                                const setNum = sIdx + 1;
-                                const key = `${ex.id}-${setNum}`;
-                                const isDone = seriesCompletadas[key];
-                                const valores = valoresSeries[key] || { reps: ex.reps, peso: '' };
+                            {isExpanded && (
+                                <div className="atleta-run-expanded-area">
+                                    {ex.notes && <p className="atleta-run-exercise-notes">💡 {ex.notes}</p>}
+                                    
+                                    <div className="atleta-run-sets-table">
+                                        <div className="atleta-run-row header">
+                                            <span>Serie</span>
+                                            <span>Reps</span>
+                                            <span>Peso (kg)</span>
+                                            <span>Check</span>
+                                        </div>
 
-                                return (
-                                    <div key={setNum} className={`atleta-run-row ${isDone ? 'completed' : ''}`}>
-                                        <span className="atleta-run-set-number">{setNum}</span>
-                                        
-                                        <input 
-                                            type="number"
-                                            value={valores.reps}
-                                            onChange={(e) => handleInputChange(ex.id, setNum, 'reps', e.target.value)}
-                                            className="atleta-run-input"
-                                            disabled={isDone}
-                                        />
-                                        
-                                        <input 
-                                            type="number"
-                                            value={valores.peso}
-                                            onChange={(e) => handleInputChange(ex.id, setNum, 'peso', e.target.value)}
-                                            className="atleta-run-input"
-                                            disabled={isDone}
-                                        />
-                                        
-                                        <button 
-                                            onClick={() => toggleSerie(ex.id, setNum)}
-                                            className={`atleta-run-check-btn ${isDone ? 'checked' : ''}`}
-                                        >
-                                            ✓
-                                        </button>
+                                        {Array.from({ length: ex.sets }).map((_, sIdx) => {
+                                            const setNum = sIdx + 1;
+                                            const key = `${ex.id}-${setNum}`;
+                                            const isDone = seriesCompletadas[key];
+                                            const valores = valoresSeries[key] || { reps: ex.reps, peso: '' };
+
+                                            return (
+                                                <div key={setNum} className={`atleta-run-row ${isDone ? 'completed' : ''}`}>
+                                                    <span className="atleta-run-set-number">{setNum}</span>
+                                                    
+                                                    <input 
+                                                        type="number"
+                                                        value={valores.reps}
+                                                        onChange={(e) => handleInputChange(ex.id, setNum, 'reps', e.target.value)}
+                                                        className="atleta-run-input"
+                                                        disabled={isDone}
+                                                    />
+                                                    
+                                                    <input 
+                                                        type="number"
+                                                        value={valores.peso}
+                                                        onChange={(e) => handleInputChange(ex.id, setNum, 'peso', e.target.value)}
+                                                        className="atleta-run-input"
+                                                        disabled={isDone}
+                                                    />
+                                                    
+                                                    <button 
+                                                        onClick={() => toggleSerie(ex.id, setNum)}
+                                                        className={`atleta-run-check-btn ${isDone ? 'checked' : ''}`}
+                                                    >
+                                                        ✓
+                                                    </button>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                );
-                            })}
+                                </div>
+                            )}
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             <div className="atleta-run-footer-controls">
@@ -272,7 +369,7 @@ const EjecutarRutina = () => {
                     </button>
                 ) : (
                     <button 
-                        onClick={() => setMostrarFeedback(true)}
+                        onClick={handleIntentarTerminar}
                         className="atleta-run-end-btn"
                     >
                         Terminar Sesión 🏁

@@ -16,3 +16,17 @@ body, html {
   margin: 0;
   padding: 0;
 }
+
+@media screen and (max-width: 900px) {
+    body {
+        background-color: #0f172a;
+        overflow: hidden; 
+    }
+    }
+    .mobile-block-page {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: white;
+    }

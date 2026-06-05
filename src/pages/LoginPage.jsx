@@ -31,7 +31,7 @@ const LoginPage = () => {
             if (decoded.role === 'ROLE_COACH' || decoded.role === 'COACH') {
                 navigate('/dashboard');
             } else if (decoded.role === 'ROLE_ALUMNO' || decoded.role === 'ALUMNO') {
-                navigate('/atleta'); // 👈 Corregido para coincidir con tu App.jsx
+                navigate('/atleta');
             } else {
                 setError('Rol de usuario no reconocido. Contacta al soporte.');
                 localStorage.removeItem('token');
