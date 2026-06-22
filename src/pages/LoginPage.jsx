@@ -62,8 +62,9 @@ const LoginPage = () => {
 
                 <form onSubmit={handleLogin} className="login-form">
                     <div className="login-input-group">
-                        <label className="login-label">Usuario</label>
+                        <label className="login-label" htmlFor="usernameInput">Usuario</label>
                         <input 
+                            id="usernameInput"
                             type="text" 
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -73,8 +74,9 @@ const LoginPage = () => {
                     </div>
 
                     <div className="login-input-group">
-                        <label className="login-label">Contraseña</label>
+                        <label className="login-label" htmlFor="passwordInput">Contraseña</label>
                         <input 
+                            id="passwordInput"
                             type="password" 
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

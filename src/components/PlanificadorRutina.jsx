@@ -283,15 +283,15 @@ const PlanificadorRutina = ({ alumnoId, isTemplateMode = false, initialTemplate 
         <div>
             <div className="coach-planner-top">
                 <div style={{ flex: 2 }}>
-                    <label className="coach-label">Nombre de la Rutina/Plantilla</label>
-                    <input type="text" placeholder="Ej: Fuerza Máxima Centrales" 
+                    <label className="coach-label" htmlFor="nombreRutinaInput">Nombre de la Rutina/Plantilla</label>
+                    <input type="text" id="nombreRutinaInput" placeholder="Ej: Fuerza Máxima Centrales" 
                         value={workout.name} onChange={e => setWorkout({...workout, name: e.target.value})} className="coach-input"/>
                 </div>
                 
                 {!isTemplateMode && (
                     <div style={{ flex: 1 }}>
-                        <label className="coach-label">Fecha de Ejecución</label>
-                        <input type="date" value={workout.scheduledDate} onChange={e => setWorkout({...workout, scheduledDate: e.target.value})} className="coach-input"/>
+                        <label className="coach-label" htmlFor="fechaRutinaInput">Fecha de Ejecución</label>
+                        <input type="date" id="fechaRutinaInput" value={workout.scheduledDate} onChange={e => setWorkout({...workout, scheduledDate: e.target.value})} className="coach-input"/>
                     </div>
                 )}
             </div>

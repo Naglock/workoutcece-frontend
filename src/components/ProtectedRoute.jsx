@@ -17,6 +17,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     } catch (error) {
         localStorage.removeItem('token'); 
         console.error("Error decodificando el token", error);
+        return <Navigate to="/" replace />;
     }
 };
 
