@@ -35,7 +35,8 @@ const AtletasPage = () => {
         try {
             const response = await api.post('/invitations/generate-alumno');
             const tokenGenerado = response.data.code;            
-            const enlaceCompleto = `http://localhost:5173/registro?token=${tokenGenerado}`;
+            const baseUrl = import.meta.env.VITE_BASE_URL || 'http://localhost:5173';
+            const enlaceCompleto = `${baseUrl}/registro?token=${tokenGenerado}`;
             setInviteLink(enlaceCompleto);
         } catch (error) {
             console.error("Error generando la invitación:", error);
