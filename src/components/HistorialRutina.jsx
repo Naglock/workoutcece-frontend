@@ -186,6 +186,23 @@ const HistorialRutinas = ({ alumnoId }) => {
                                 
                                 {isExpanded && (
                                     <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px dashed #cbd5e1' }}>
+                                        
+                                        {isCompletado && (workout.sessionNotes || workout.sessionRpe) && (
+                                            <div style={{ backgroundColor: '#fffbeb', padding: '15px', borderRadius: '8px', marginBottom: '20px', border: '1px solid #fde68a' }}>
+                                                <h5 style={{ margin: '0 0 8px 0', color: '#b45309', fontSize: '14px', fontWeight: 'bold' }}>🗣️ Feedback General del Atleta</h5>
+                                                {workout.sessionRpe && (
+                                                    <div style={{ fontSize: '13px', color: '#92400e', marginBottom: '6px' }}>
+                                                        <strong>Esfuerzo Percibido (RPE):</strong> {workout.sessionRpe} / 10
+                                                    </div>
+                                                )}
+                                                {workout.sessionNotes && (
+                                                    <div style={{ fontSize: '13px', color: '#92400e', fontStyle: 'italic', backgroundColor: '#fef3c7', padding: '10px', borderRadius: '6px' }}>
+                                                        "{workout.sessionNotes}"
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
                                         {Object.entries(ejerciciosAgrupados).map(([nombreBloque, ejercicios]) => (
                                             <div key={nombreBloque} style={{ marginBottom: '25px' }}>
                                                 <h5 style={{ 

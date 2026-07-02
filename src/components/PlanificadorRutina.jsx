@@ -329,63 +329,102 @@ const PlanificadorRutina = ({ alumnoId, isTemplateMode = false, initialTemplate 
                                 </tr>
                             </thead>
                             <tbody>
-                                {block.exercises.map((ex, exIndex) => (
-                                    <tr key={exIndex}>
-                                        <td>
-                                            <BuscadorEjercicios 
-                                                exercisesLib={exercisesLib} 
-                                                value={ex.exercise.id} 
-                                                onChange={(val) => handleExerciseChange(blockIndex, exIndex, val)} 
-                                            />
-                                        </td>
-                                        <td>
-                                            <span className="coach-planner-rm-badge">{ex._baseRm > 0 ? `${ex._baseRm} kg` : '--'}</span>
-                                        </td>
-                                        <td><input type="number" placeholder="%" value={ex.intensityPercentage || ''} className="coach-input" style={{ width: '65px', textAlign: 'center' }} onChange={e => handleIntensityChange(blockIndex, exIndex, e.target.value)}/></td>
-                                        <td><input type="number" placeholder="kg" disabled value={ex.targetWeight || ''} className="coach-input" style={{ width: '75px', textAlign: 'center', backgroundColor: '#f1f5f9', color: '#64748b' }}/></td>
-                                        <td><input type="number" placeholder="kg" value={ex.manualWeightOverride || ''} className="coach-input" style={{ width: '75px', textAlign: 'center' }}
-                                                onChange={e => {
-                                                    const newBlocks = [...workout.blocks];
-                                                    newBlocks[blockIndex].exercises[exIndex].manualWeightOverride = e.target.value;
-                                                    setWorkout({...workout, blocks: newBlocks});
-                                                }}/></td>
-                                        <td><input type="number" value={ex.sets} className="coach-input" style={{ width: '55px', textAlign: 'center' }}
-                                                onChange={e => {
-                                                    const newBlocks = [...workout.blocks];
-                                                    newBlocks[blockIndex].exercises[exIndex].sets = e.target.value;
-                                                    setWorkout({...workout, blocks: newBlocks});
-                                                }}/></td>
-                                        <td><input type="number" value={ex.reps} className="coach-input" style={{ width: '55px', textAlign: 'center' }}
-                                                onChange={e => {
-                                                    const newBlocks = [...workout.blocks];
-                                                    newBlocks[blockIndex].exercises[exIndex].reps = e.target.value;
-                                                    setWorkout({...workout, blocks: newBlocks});
-                                                }}/></td>
-                                        <td><input type="number" value={ex.targetRpe} className="coach-input" style={{ width: '55px', textAlign: 'center' }}
-                                                onChange={e => {
-                                                    const newBlocks = [...workout.blocks];
-                                                    newBlocks[blockIndex].exercises[exIndex].targetRpe = e.target.value;
-                                                    setWorkout({...workout, blocks: newBlocks});
-                                                }}/></td>
-                                        <td><input type="text" placeholder="90s" value={ex.restTime || ''} className="coach-input" style={{ width: '65px', textAlign: 'center' }}
-                                                onChange={e => {
-                                                    const newBlocks = [...workout.blocks];
-                                                    newBlocks[blockIndex].exercises[exIndex].restTime = e.target.value;
-                                                    setWorkout({...workout, blocks: newBlocks});
-                                                }}/></td>
-                                        <td><input type="text" placeholder="Tips..." value={ex.notes || ''} className="coach-input" style={{ minWidth: '130px' }}
-                                                onChange={e => {
-                                                    const newBlocks = [...workout.blocks];
-                                                    newBlocks[blockIndex].exercises[exIndex].notes = e.target.value;
-                                                    setWorkout({...workout, blocks: newBlocks});
-                                                }}/></td>
-                                        <td>
-                                            <button onClick={() => removeExerciseFromBlock(blockIndex, exIndex)} className="coach-planner-delete-ex-btn" title="Quitar Ejercicio">
-                                                ✕
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {block.exercises.map((ex, exIndex) => {
+                                    const preventInvalidChars = (e) => {
+                                        if (e.key === '-' || e.key === 'e' || e.key === 'E' || e.key === '+') {
+                                            e.preventDefault();
+                                        }
+                                    };
+
+                                    return (
+                                        <tr key={exIndex}>
+                                            <td>
+                                                <BuscadorEjercicios 
+                                                    exercisesLib={exercisesLib} 
+                                                    value={ex.exercise.id} 
+                                                    onChange={(val) => handleExerciseChange(blockIndex, exIndex, val)} 
+                                                />
+                                            </td>
+                                            <td>
+                                                <span className="coach-planner-rm-badge">{ex._baseRm > 0 ? `${ex._baseRm} kg` : '--'}</span>
+                                            </td>
+                                            <td>
+                                                <input type="number" min="0" placeholder="%" value={ex.intensityPercentage || ''} className="coach-input" style={{ width: '65px', textAlign: 'center' }} 
+                                                    onKeyDown={preventInvalidChars}
+                                                    onChange={e => handleIntensityChange(blockIndex, exIndex, e.target.value)}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input type="number" placeholder="kg" disabled value={ex.targetWeight || ''} className="coach-input" style={{ width: '75px', textAlign: 'center', backgroundColor: '#f1f5f9', color: '#64748b' }}/>
+                                            </td>
+                                            <td>
+                                                <input type="number" min="0" step="0.1" placeholder="kg" value={ex.manualWeightOverride || ''} className="coach-input" style={{ width: '75px', textAlign: 'center' }}
+                                                    onKeyDown={preventInvalidChars}
+                                                    onChange={e => {
+                                                        const newBlocks = [...workout.blocks];
+                                                        newBlocks[blockIndex].exercises[exIndex].manualWeightOverride = e.target.value;
+                                                        setWorkout({...workout, blocks: newBlocks});
+                                                    }}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input type="number" min="0" value={ex.sets} className="coach-input" style={{ width: '55px', textAlign: 'center' }}
+                                                    onKeyDown={preventInvalidChars}
+                                                    onChange={e => {
+                                                        const newBlocks = [...workout.blocks];
+                                                        newBlocks[blockIndex].exercises[exIndex].sets = e.target.value;
+                                                        setWorkout({...workout, blocks: newBlocks});
+                                                    }}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input type="number" min="0" value={ex.reps} className="coach-input" style={{ width: '55px', textAlign: 'center' }}
+                                                    onKeyDown={preventInvalidChars}
+                                                    onChange={e => {
+                                                        const newBlocks = [...workout.blocks];
+                                                        newBlocks[blockIndex].exercises[exIndex].reps = e.target.value;
+                                                        setWorkout({...workout, blocks: newBlocks});
+                                                    }}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input type="number" min="0" max="10" value={ex.targetRpe} className="coach-input" style={{ width: '55px', textAlign: 'center' }}
+                                                    onKeyDown={preventInvalidChars}
+                                                    onChange={e => {
+                                                        let val = e.target.value;
+                                                        if (val > 10) val = 10;
+                                                        const newBlocks = [...workout.blocks];
+                                                        newBlocks[blockIndex].exercises[exIndex].targetRpe = val;
+                                                        setWorkout({...workout, blocks: newBlocks});
+                                                    }}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input type="text" placeholder="90s" value={ex.restTime || ''} className="coach-input" style={{ width: '65px', textAlign: 'center' }}
+                                                    onChange={e => {
+                                                        const newBlocks = [...workout.blocks];
+                                                        newBlocks[blockIndex].exercises[exIndex].restTime = e.target.value;
+                                                        setWorkout({...workout, blocks: newBlocks});
+                                                    }}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input type="text" placeholder="Tips..." value={ex.notes || ''} className="coach-input" style={{ minWidth: '130px' }}
+                                                    onChange={e => {
+                                                        const newBlocks = [...workout.blocks];
+                                                        newBlocks[blockIndex].exercises[exIndex].notes = e.target.value;
+                                                        setWorkout({...workout, blocks: newBlocks});
+                                                    }}
+                                                />
+                                            </td>
+                                            <td>
+                                                <button onClick={() => removeExerciseFromBlock(blockIndex, exIndex)} className="coach-planner-delete-ex-btn" title="Quitar Ejercicio">
+                                                    ✕
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>

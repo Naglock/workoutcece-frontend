@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import api from '../services/api';
 import '../components/AtletaStyles.css';
+import { WorkoutSessionContext } from '../components/AtletaLayout';
 
 const extractYouTubeId = (url) => {
     if (!url) return null;
@@ -16,18 +17,82 @@ const EjecutarRutina = () => {
     const [searchParams] = useSearchParams();
     const routineId = searchParams.get('id');
 
+    const navContext = useContext(WorkoutSessionContext);
+    const setIsWorkoutActive = navContext?.setIsWorkoutActive;
+    const setOnSaveDraftCallback = navContext?.setOnSaveDraftCallback;
+
+    const saveDraftRef = useRef(null);
+
     const [tiempo, setTiempo] = useState(0);
     const [routine, setRoutine] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
     const [seriesCompletadas, setSeriesCompletadas] = useState({});
     const [valoresSeries, setValoresSeries] = useState({});
+    const [notasEjercicios, setNotasEjercicios] = useState({});
     
     const [expandedExercises, setExpandedExercises] = useState({});
     
     const [mostrarFeedback, setMostrarFeedback] = useState(false);
     const [rpe, setRpe] = useState(7);
     const [comentarios, setComentarios] = useState('');
+
+    const handleSaveDraft = async () => {
+        try {
+            const savePromises = [];
+            Object.keys(seriesCompletadas).forEach(key => {
+                if (seriesCompletadas[key]) { 
+                    const [exerciseId, setNum] = key.split('-');
+                    
+                    const currentReps = parseInt(valoresSeries[key].reps || 0);
+                    const currentPeso = parseFloat(valoresSeries[key].peso || 0);
+                    const currentRm = currentReps > 0 ? (currentPeso * (1 + 0.0333 * currentReps)) : 0;
+
+                    const payload = {
+                        plannedExercise: { id: parseInt(exerciseId) },
+                        setNumber: parseInt(setNum),
+                        actualWeight: currentPeso,
+                        actualReps: currentReps,
+                        actualRpe: parseInt(rpe) || 5,
+                        athleteNotes: notasEjercicios[exerciseId] || '',
+                        estimatedRm: Math.round(currentRm)
+                    };
+                    
+                    savePromises.push(
+                        api.post('/executions/register', payload).catch(err => {})
+                    );
+                }
+            });
+
+            if (savePromises.length > 0) {
+                await Promise.all(savePromises);
+            }
+
+            await api.put(`/workouts/${routineId}/pause?time=${Math.max(1, Math.round(tiempo/60))}`);
+        } catch (error) {}
+    };
+
+    useEffect(() => {
+        saveDraftRef.current = handleSaveDraft;
+    });
+
+    useEffect(() => {
+        if (setIsWorkoutActive && setOnSaveDraftCallback) {
+            setIsWorkoutActive(true);
+            setOnSaveDraftCallback(() => async () => {
+                if (saveDraftRef.current) {
+                    await saveDraftRef.current();
+                }
+            });
+        }
+
+        return () => {
+            if (setIsWorkoutActive && setOnSaveDraftCallback) {
+                setIsWorkoutActive(false);
+                setOnSaveDraftCallback(null);
+            }
+        };
+    }, [setIsWorkoutActive, setOnSaveDraftCallback]);
 
     useEffect(() => {
         const fetchRoutineData = async () => {
@@ -40,9 +105,13 @@ const EjecutarRutina = () => {
 
                 if (alumnoId && routineId) {
                     const response = await api.get(`/workouts/my-routine/${alumnoId}`);
-                    const rutinaEspecifica = response.data.find(r => r.id === parseInt(routineId));
+                    const rutinaEspecifica = response.data.find(r => parseInt(r.id) === parseInt(routineId));
 
                     if (rutinaEspecifica) {
+                        if (rutinaEspecifica.estado === 'PAUSADA' && rutinaEspecifica.executionTimeMinutes) {
+                            setTiempo(rutinaEspecifica.executionTimeMinutes * 60);
+                        }
+
                         const blocksMap = {};
                         rutinaEspecifica.exercises?.forEach(ex => {
                             if (!blocksMap[ex.blockName]) {
@@ -53,29 +122,55 @@ const EjecutarRutina = () => {
                         
                         setRoutine({ ...rutinaEspecifica, blocks: Object.values(blocksMap) });
 
+                        let ejecucionesPrevias = [];
+                        try {
+                            const execRes = await api.get(`/executions/workout/${routineId}`);
+                            ejecucionesPrevias = execRes.data || [];
+                        } catch (e) {
+                            ejecucionesPrevias = [];
+                        }
+
                         const inicialCompletadas = {};
                         const inicialValores = {};
                         const inicialExpanded = {};
+                        const inicialNotas = {};
                         
                         rutinaEspecifica.exercises?.forEach((ex) => {
                             inicialExpanded[ex.id] = false;
 
                             for (let s = 1; s <= ex.sets; s++) {
                                 const key = `${ex.id}-${s}`;
-                                inicialCompletadas[key] = false;
-                                inicialValores[key] = {
-                                    reps: ex.reps,
-                                    peso: ex.manualWeightOverride || ex.targetWeight || 0
-                                };
+                                
+                                const ejecucionGuardada = ejecucionesPrevias.find(
+                                    ej => parseInt(ej.plannedExercise?.id) === parseInt(ex.id) && parseInt(ej.setNumber) === parseInt(s)
+                                );
+
+                                if (ejecucionGuardada) {
+                                    inicialCompletadas[key] = true;
+                                    inicialValores[key] = {
+                                        reps: ejecucionGuardada.actualReps,
+                                        peso: ejecucionGuardada.actualWeight
+                                    };
+                                    if (!inicialNotas[ex.id] && ejecucionGuardada.athleteNotes) {
+                                        inicialNotas[ex.id] = ejecucionGuardada.athleteNotes;
+                                    }
+                                } else {
+                                    inicialCompletadas[key] = false;
+                                    inicialValores[key] = {
+                                        reps: ex.reps,
+                                        peso: ex.manualWeightOverride || ex.targetWeight || 0
+                                    };
+                                }
                             }
                         });
+                        
                         setSeriesCompletadas(inicialCompletadas);
                         setValoresSeries(inicialValores);
                         setExpandedExercises(inicialExpanded);
+                        setNotasEjercicios(inicialNotas);
                     }
                 }
             } catch (err) {
-                console.error("Error cargando la rutina de ejecución:", err);
             } finally {
                 setLoading(false);
             }
@@ -105,6 +200,10 @@ const EjecutarRutina = () => {
     };
 
     const handleInputChange = (exerciseId, setNum, field, value) => {
+        if (value !== '' && Number(value) < 0) {
+            return;
+        }
+
         const key = `${exerciseId}-${setNum}`;
         setValoresSeries(prev => ({
             ...prev,
@@ -140,14 +239,12 @@ const EjecutarRutina = () => {
                         actualWeight: currentPeso,
                         actualReps: currentReps,
                         actualRpe: parseInt(rpe),
-                        athleteNotes: comentarios,
+                        athleteNotes: notasEjercicios[exerciseId] || '',
                         estimatedRm: Math.round(currentRm)
                     };
                     
                     savePromises.push(
-                        api.post('/executions/register', payload).catch(err => {
-                            console.warn(`Error guardando serie ${setNum} de ej ${exerciseId}`, err);
-                        })
+                        api.post('/executions/register', payload).catch(err => {})
                     );
                 }
             });
@@ -158,13 +255,12 @@ const EjecutarRutina = () => {
 
             const minutosTotales = Math.max(1, Math.round(tiempo/60));
 
-            await api.put(`/workouts/${routineId}/complete?time=${minutosTotales}`);
+            await api.put(`/workouts/${routineId}/complete?time=${minutosTotales}&rpe=${rpe}&notes=${encodeURIComponent(comentarios)}`);
 
             alert("¡Sesión concluida! El detalle de cada una de tus series ha sido registrado.");
             navigate('/atleta');
         } catch (err) {
-            console.error("Error global al registrar el entrenamiento:", err);
-            alert("Hubo un error al guardar los datos. Revisa la consola.");
+            alert("Hubo un error al guardar los datos.");
         }
     };
 
@@ -232,7 +328,7 @@ const EjecutarRutina = () => {
     return (
         <div className="atleta-run-container">
             <div className="atleta-run-header">
-                <button onClick={() => navigate(-1)} className="atleta-run-close-btn">✕</button>
+                <button onClick={() => navContext ? navContext.handleNavigation('/atleta') : navigate(-1)} className="atleta-run-close-btn">✕</button>
                 <div className="atleta-run-title-zone">
                     <span className="atleta-run-badge">EN CURSO</span>
                     <h2 className="atleta-run-routine-name">{routine.name}</h2>
@@ -328,6 +424,7 @@ const EjecutarRutina = () => {
                                                     
                                                     <input 
                                                         type="number"
+                                                        min="0"
                                                         value={valores.reps}
                                                         onChange={(e) => handleInputChange(ex.id, setNum, 'reps', e.target.value)}
                                                         className="atleta-run-input"
@@ -336,6 +433,7 @@ const EjecutarRutina = () => {
                                                     
                                                     <input 
                                                         type="number"
+                                                        min="0"
                                                         value={valores.peso}
                                                         onChange={(e) => handleInputChange(ex.id, setNum, 'peso', e.target.value)}
                                                         className="atleta-run-input"
@@ -351,6 +449,23 @@ const EjecutarRutina = () => {
                                                 </div>
                                             );
                                         })}
+                                    </div>
+                                    
+                                    <div style={{ marginTop: '15px' }}>
+                                        <textarea 
+                                            placeholder="Añadir comentario personal sobre este ejercicio..."
+                                            value={notasEjercicios[ex.id] || ''}
+                                            onChange={(e) => setNotasEjercicios(prev => ({...prev, [ex.id]: e.target.value}))}
+                                            style={{ 
+                                                width: '100%', 
+                                                minHeight: '60px', 
+                                                padding: '10px', 
+                                                fontSize: '14px', 
+                                                borderRadius: '6px', 
+                                                border: '1px solid #cbd5e1', 
+                                                resize: 'vertical' 
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             )}

@@ -116,23 +116,12 @@ const AtletaInicio = () => {
     }, []);
 
     useEffect(() => {
-        if (todasLasRutinas.length === 0) return;
-
-        const rutinasDeLaFecha = todasLasRutinas.filter(r => r.fechaFormato === selectedDate);
-        const hoyIso = getLocalIso(new Date());
-
-        if (rutinasDeLaFecha.length > 0) {
-            setPlanesMostrados(rutinasDeLaFecha);
-        } else if (selectedDate === hoyIso) {
-            const pendientes = todasLasRutinas.filter(r => r.estado !== 'COMPLETADO' && !r.isCompleted);
-            if (pendientes.length > 0) {
-                setPlanesMostrados([{ ...pendientes[0], name: `${pendientes[0].name} (Próxima)` }]);
-            } else {
-                setPlanesMostrados([]);
-            }
-        } else {
+        if (!todasLasRutinas || todasLasRutinas.length === 0) {
             setPlanesMostrados([]);
+            return;
         }
+        const rutinasDeLaFecha = todasLasRutinas.filter(r => r.fechaFormato === selectedDate);
+        setPlanesMostrados(rutinasDeLaFecha);
     }, [selectedDate, todasLasRutinas]);
 
     const formattedDate = currentTime.toLocaleDateString('es-CL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });

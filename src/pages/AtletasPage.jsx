@@ -50,6 +50,21 @@ const AtletasPage = () => {
         setTimeout(() => setLinkCopied(false), 2000); 
     };
 
+    const handleDeleteAtleta = async (id, nombre) => {
+        const confirmacion = window.confirm(`¿Estás seguro de que deseas eliminar permanentemente a ${nombre}? Se borrará todo su historial y rutinas. Esta acción no se puede deshacer.`);
+        
+        if (confirmacion) {
+            try {
+                await api.delete(`/auth/${id}`);
+                setAtletas(prev => prev.filter(atleta => atleta.id !== id));
+                alert(`El jugador ${nombre} ha sido eliminado del sistema.`);
+            } catch (err) {
+                console.error("Error al eliminar atleta:", err);
+                alert("Ocurrió un error al intentar eliminar al jugador. Revisa la conexión con el servidor.");
+            }
+        }
+    };
+
     return (
         <div>
             <div className="coach-card">
@@ -87,12 +102,21 @@ const AtletasPage = () => {
                                             <td><strong>{atleta.fullName}</strong></td>
                                             <td>{atleta.email}</td>
                                             <td>
-                                                <button 
-                                                    className="coach-btn coach-btn-outline"
-                                                    onClick={() => navigate(`/dashboard/atletas/${atleta.id}`)}
-                                                >
-                                                    Ver Perfil
-                                                </button>
+                                                <div style={{ display: 'flex', gap: '10px' }}>
+                                                    <button 
+                                                        className="coach-btn coach-btn-outline"
+                                                        onClick={() => navigate(`/dashboard/atletas/${atleta.id}`)}
+                                                    >
+                                                        Ver Perfil
+                                                    </button>
+                                                    <button 
+                                                        className="coach-btn coach-btn-outline"
+                                                        style={{ borderColor: '#ef4444', color: '#ef4444' }}
+                                                        onClick={() => handleDeleteAtleta(atleta.id, atleta.fullName)}
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

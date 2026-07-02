@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import PlanificadorRutina from './PlanificadorRutina';
 import api from '../services/api';
+
 vi.mock('../services/api', () => ({
     default: {
         get: vi.fn(),
@@ -57,10 +58,8 @@ describe('PlanificadorRutina Component', () => {
 
     it('Debe mostrar alerta si se intenta guardar sin nombre', async () => {
         render(<PlanificadorRutina alumnoId={1} />);
-
         const saveButton = screen.getByRole('button', { name: /🚀 asignar planificación/i });
         fireEvent.click(saveButton);
-
         expect(window.alert).toHaveBeenCalledWith("Por favor, ingresa el nombre de la rutina.");
         expect(api.post).not.toHaveBeenCalled();
     });
@@ -69,10 +68,8 @@ describe('PlanificadorRutina Component', () => {
         render(<PlanificadorRutina alumnoId={1} />);
         const nameInput = screen.getByPlaceholderText('Ej: Fuerza Máxima Centrales');
         fireEvent.change(nameInput, { target: { value: 'Rutina Potencia' } });
-
         const saveButton = screen.getByRole('button', { name: /🚀 asignar planificación/i });
         fireEvent.click(saveButton);
-
         expect(window.alert).toHaveBeenCalledWith("Por favor, selecciona una fecha.");
         expect(api.post).not.toHaveBeenCalled();
     });
@@ -80,7 +77,6 @@ describe('PlanificadorRutina Component', () => {
     it('Debe guardar exitosamente una rutina completando nombre y fecha', async () => {
         const mockOnSaveSuccess = vi.fn();
         api.post.mockResolvedValueOnce({ data: { id: 99 } });
-
         render(<PlanificadorRutina alumnoId={1} onSaveSuccess={mockOnSaveSuccess} />);
         fireEvent.change(screen.getByPlaceholderText('Ej: Fuerza Máxima Centrales'), { target: { value: 'Día de Piernas' } });
         const dateInput = document.querySelector('input[type="date"]');
@@ -98,20 +94,65 @@ describe('PlanificadorRutina Component', () => {
         });
     });
 
-    it('Debe renderizar en modo plantilla y guardar usando el endpoint correcto', async () => {
-        render(<PlanificadorRutina alumnoId={null} isTemplateMode={true} />);
+    it('Debe permitir añadir un ejercicio, buscarlo, seleccionarlo y calcular RM', async () => {
+        render(<PlanificadorRutina alumnoId={1} />);
+        const btnAddExercise = screen.getByRole('button', { name: /\+ añadir ejercicio a bloque a/i });
+        fireEvent.click(btnAddExercise);
+        const buscadorDiv = screen.getByText('🔍 Buscar ejercicio...');
+        fireEvent.click(buscadorDiv);
 
-        expect(screen.queryByLabelText(/fecha de ejecución/i)).not.toBeInTheDocument();
+        const searchInput = screen.getByPlaceholderText('Ej: press banca, bulgara...');
+        fireEvent.change(searchInput, { target: { value: 'press' } });
+        const opcion = await screen.findByText('Press Banca');
+        fireEvent.click(opcion);
+        await waitFor(() => {
+            expect(api.get).toHaveBeenCalledWith('/analytics/rm-progress/1/2');
+        });
+    });
 
-        fireEvent.change(screen.getByPlaceholderText('Ej: Fuerza Máxima Centrales'), { target: { value: 'Plantilla Base' } });
+    it('Debe permitir modificar métricas del ejercicio y eliminarlo', async () => {
+        render(<PlanificadorRutina alumnoId={1} />);
         
-        api.post.mockResolvedValueOnce({ data: { id: 88 } });
-        fireEvent.click(screen.getByRole('button', { name: /💾 guardar plantilla/i }));
+        fireEvent.click(screen.getByRole('button', { name: /\+ añadir ejercicio a bloque a/i }));
+        const inputsPorcentaje = screen.getAllByPlaceholderText('%');
+        fireEvent.change(inputsPorcentaje[0], { target: { value: '80' } });
+        const inputsSets = screen.getAllByDisplayValue('3'); 
+        fireEvent.change(inputsSets[0], { target: { value: '4' } });
+        const deleteBtn = screen.getByTitle('Quitar Ejercicio');
+        fireEvent.click(deleteBtn);
+
+        expect(screen.queryByTitle('Quitar Ejercicio')).not.toBeInTheDocument();
+    });
+
+    it('Debe cargar correctamente una plantilla inicial en modo edición (PUT)', async () => {
+        const mockInitialTemplate = {
+            id: 5,
+            name: 'Plantilla de Test',
+            exercises: [
+                { 
+                    blockName: 'Bloque Único', 
+                    exercise: { id: 1 }, 
+                    intensityPercentage: 70, 
+                    sets: 3, 
+                    reps: 10 
+                }
+            ]
+        };
+
+        api.put.mockResolvedValueOnce({ data: { id: 5 } });
+
+        render(<PlanificadorRutina initialTemplate={mockInitialTemplate} isTemplateMode={true} />);
+        await waitFor(() => {
+            expect(screen.getByDisplayValue('Plantilla de Test')).toBeInTheDocument();
+            expect(screen.getByDisplayValue('Bloque Único')).toBeInTheDocument();
+        });
+        expect(screen.getByDisplayValue('Bloque Único')).toBeInTheDocument();
+        const updateBtn = await screen.findByRole('button', { name: /💾 actualizar plantilla/i });
+        fireEvent.click(updateBtn);
 
         await waitFor(() => {
-            expect(api.post).toHaveBeenCalledWith('/workouts/create-template', expect.objectContaining({
-                name: 'Plantilla Base',
-                scheduledDate: null,
+            expect(api.put).toHaveBeenCalledWith('/workouts/templates/5', expect.objectContaining({
+                name: 'Plantilla de Test',
                 template: true
             }));
         });

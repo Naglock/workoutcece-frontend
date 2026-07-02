@@ -19,10 +19,7 @@ const LoginPage = () => {
         setIsLoading(true);
 
         try {
-            const response = await api.post('/auth/login', {
-                username,
-                password
-            });
+            const response = await api.post('/auth/login', { username, password });
             const token = response.data.token;
             
             localStorage.setItem('token', token);
@@ -33,14 +30,14 @@ const LoginPage = () => {
             } else if (decoded.role === 'ROLE_ALUMNO' || decoded.role === 'ALUMNO') {
                 navigate('/atleta');
             } else {
-                setError('Rol de usuario no reconocido. Contacta al soporte.');
+                setError('Rol de usuario no reconocido.');
                 localStorage.removeItem('token');
             }
         } catch (err) {
             if (err.response && err.response.status === 401) {
                 setError('Usuario o contraseña incorrectos.');
             } else {
-                setError('Error al conectar con el servidor. Intenta más tarde.');
+                setError('Error al conectar con el servidor.');
             }
         } finally {
             setIsLoading(false);
@@ -50,11 +47,8 @@ const LoginPage = () => {
     return (
         <div className="login-page-wrapper">
             <div className="login-card">
-                
                 <div className="login-gold-line"></div>
-                
                 <img src={logoExcelsior} alt="Escudo Excelsior" className="login-logo" />
-                
                 <h2 className="login-title">WorkoutCeCeApp</h2>
                 <p className="login-subtitle">Portal de Acceso</p>
 
@@ -63,35 +57,27 @@ const LoginPage = () => {
                 <form onSubmit={handleLogin} className="login-form">
                     <div className="login-input-group">
                         <label className="login-label" htmlFor="usernameInput">Usuario</label>
-                        <input 
-                            id="usernameInput"
-                            type="text" 
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="login-input"
-                            required
-                        />
+                        <input id="usernameInput" type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="login-input" required />
                     </div>
 
                     <div className="login-input-group">
                         <label className="login-label" htmlFor="passwordInput">Contraseña</label>
-                        <input 
-                            id="passwordInput"
-                            type="password" 
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="login-input"
-                            required
-                        />
+                        <input id="passwordInput" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="login-input" required />
                     </div>
 
-                    <button 
-                        type="submit" 
-                        className="login-button"
-                        disabled={isLoading}
-                    >
+                    <button type="submit" className="login-button" disabled={isLoading}>
                         {isLoading ? 'Conectando...' : 'Ingresar ▶'}
                     </button>
+
+                    <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                        <button 
+                            type="button" 
+                            onClick={() => navigate('/forgot-password')}
+                            style={{ background: 'none', border: 'none', color: '#64748b', fontSize: '13px', cursor: 'pointer', textDecoration: 'underline' }}
+                        >
+                            ¿Olvidaste tu contraseña?
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
